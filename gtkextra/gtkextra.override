@@ -1,0 +1,53 @@
+/* This is top */
+/* -*- Mode: C; c-basic-offset: 4 -*- */
+%%
+headers
+#define NO_IMPORT_PYGOBJECT
+#include <pygobject.h>
+#include <pygtk/pygtk.h>
+#include <gtkextra/gtkextra.h>
+
+/* Fixup boo-boo's or ommissions.  Probably should be fixed in gtkextra.*/
+#define GTK_ICON_FILE_SEL GTK_ICON_FILESEL
+#define GTK_TYPE_ICON_FILE_SEL (gtk_icon_file_selection_get_type())
+#define GTK_TYPE_COMBO_BOX (gtk_combobox_get_type())
+#define GTK_TYPE_COLOR_COMBO (gtk_color_combo_get_type())
+#define GTK_TYPE_BORDER_COMBO (gtk_border_combo_get_type())
+#define GTK_TYPE_FONT_COMBO (gtk_font_combo_get_type())
+#define GTK_TYPE_PLOT3_D (gtk_plot3d_get_type())
+#define GTK_TYPE_TOGGLE_COMBO (gtk_toggle_combo_get_type())
+
+/* This one is probably an "error" in h2def.py */
+#define GTK_PLOT3_D GTK_PLOT3D
+
+%%
+modulename gtkextra
+%%
+import gobject.GObject as PyGObject_Type
+import gtk.gdk.Pixmap as PyGdkPixmap_Type
+import gtk.gdk.Drawable as PyGdkDrawable_Type
+import gtk._gtk.Widget as PyGtkWidget_Type
+import gtk._gtk.Object as PyGtkObject_Type
+import gtk._gtk.Container as PyGtkContainer_Type
+import gtk._gtk.Fixed as PyGtkFixed_Type
+import gtk._gtk.Toolbar as PyGtkToolbar_Type
+import gtk._gtk.Entry as PyGtkEntry_Type
+import gtk._gtk.Window as PyGtkWindow_Type
+import gtk._gtk.CTree as PyGtkCTree_Type
+import gtk._gtk.ToggleButton as PyGtkToggleButton_Type
+import gtk._gtk.Adjustment as PyGtkAdjustment_Type
+import gtk._gtk.HBox as PyGtkHBox_Type
+
+
+%%
+#ignore-glob *_get_type
+%%
+ignore
+  triangulate
+  gtk_sheet_row_resizable
+  gtkextra_check_version
+  gtk_plot_dt_set_quadtrilateral
+
+
+
+
