@@ -2054,6 +2054,48 @@ _wrap_gtk_sheet_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     return 0;
 }
 %%
+override gtk_sheet_get_active_cell
+static PyObject *
+_wrap_gtk_sheet_get_active_cell (PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    gint row, column;
+    gtk_sheet_get_active_cell (GTK_SHEET(self->obj), &row, &column);
+    return Py_BuildValue ("(ii)", row, column);
+}
+%%
+override gtk_sheet_get_pixel_info kwargs
+static PyObject *
+_wrap_gtk_sheet_get_pixel_info (PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static gchar *kwlist[] = { "x", "y", NULL };
+    gint x, y, row, column, ret;
+    
+    if (!PyArg_ParseTupleAndKeywords (args, kwargs, "ii:GtkSheet.get_pixel_info", kwlist, &x, &y))
+        return NULL;
+    ret = gtk_sheet_get_pixel_info(GTK_SHEET(self->obj), x, y, &row, &column);
+    if (ret) 
+        return Py_BuildValue("(ii)", row, column);
+    Py_INCREF (Py_None);
+    return Py_None;
+}
+%%
+override gtk_sheet_put kwargs
+static PyObject *
+_wrap_gtk_sheet_put (PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "widget", "x", "y", NULL };
+    gint x, y;
+    PyGObject *widget;
+    
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O!ii:GtkSheet.put", kwlist, &PyGtkWidget_Type, &widget, &x, &y))
+        return NULL;
+
+    /* no need to return child here, other sheet methods dont't do that either! */
+    (void) gtk_sheet_put (GTK_SHEET(self->obj), GTK_WIDGET(widget->obj), x, y);
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
 ignore
   gtk_sheet_new_browser  
   gtk_sheet_construct_browser
