@@ -72,7 +72,6 @@ if not os.path.exists(odir):
     os.mkdir(odir)
 
 for m,delay in modules:
-    #process_html(m, odir)
-    #process_gui(m, odir, delay)
-    fd.write(pattern % locals())
+    process_html(m, odir)
+    process_gui(m, odir, delay)
     
