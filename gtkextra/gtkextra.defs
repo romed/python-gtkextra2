@@ -4265,7 +4265,7 @@
   (return-type "GtkWidget*")
   (parameters
     '("GdkPixmap*" "pixmap")
-    '("GdkBitmap*" "mask")
+    '("GdkBitmap*" "mask" (default "NULL") (null-ok))
   )
 )
 

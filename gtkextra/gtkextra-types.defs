@@ -87,7 +87,6 @@
   (gtype-id "GTK_TYPE_ITEM_ENTRY")
 )
 
-;; Missed by h2def.py
 (define-object PlotCanvas
   (in-module "Gtk")
   (parent "GtkFixed")
@@ -248,7 +247,7 @@
 ; Lot more to do from gtkplot.h. Also compare fields to accessor functions.
 ; Also gtkextra code needs all of those boxed fixed up with types and macros.
 
-(define-boxed GtkPlotLine
+(define-boxed PlotLine
   (in-module "Gtk")
   (c-name "GtkPlotLine")
   (gtype-id "GTK_TYPE_PLOT_LINE")
@@ -257,6 +256,12 @@
     '("GdkCapStyle" "cap_style")
     '("GdkJoinStyle" "join_style")
   )
+)
+
+(define-boxed PlotMarker
+  (in-module "Gtk")
+  (c-name "GtkPlotMarker")
+  (gtype-id "GTK_TYPE_PLOT_MARKER")
 )
 
 (define-boxed PlotText

@@ -6,6 +6,8 @@ from math import exp, pow, sin
 class Application(gtk.Window):
 
     scale = 1.0
+    def __del__(self):
+        print 'Application.__del__'
     
     def __init__(self):
         self.nlayers = 0
@@ -114,8 +116,8 @@ class Application(gtk.Window):
             print "Item selected: DATA"
             (i, x, y) = canvas.get_active_point()
             print "Active point: %d -> %f %f" % (i, x, y)
-            #canvas.get_active_data().add_marker(i)
-            #canvas.get_active_plot().queue_draw()
+            canvas.get_active_data().add_marker(i)
+            canvas.get_active_plot().queue_draw()
         elif item.type == gtkextra.PLOT_CANVAS_MARKER:
             print "Item selected: MARKER"
         elif item.type == gtkextra.PLOT_CANVAS_NONE:
@@ -195,9 +197,9 @@ class Application(gtk.Window):
         data.set_y_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, black)
         data.set_legend("Line + Symbol")
         
-        #data = plot.add_function(self.function)
-        #data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, blue)
-        #data.set_legend("Function Plot")
+        data = plot.add_function(self.function)
+        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, blue)
+        data.set_legend("Function Plot")
 
     def build_example2(self, plot):
         px2 = [.1, .2, .3, .4, .5, .6, .7, .8]
@@ -208,9 +210,9 @@ class Application(gtk.Window):
         dark_green = colormap.alloc_color("dark green")
         blue = colormap.alloc_color("blue")
         
-        #data = plot.add_function(self.gaussian)
-        #data.set_line_attributes(gtkextra.PLOT_LINE_DASHED, 2, dark_green)
-        #data.set_legend("Gaussian")
+        data = plot.add_function(self.gaussian)
+        data.set_line_attributes(gtkextra.PLOT_LINE_DASHED, 0, 0, 2, dark_green)
+        data.set_legend("Gaussian")
 
         data = gtkextra.PlotBar(gtk.ORIENTATION_VERTICAL)
         plot.add_data(data)

@@ -5,6 +5,8 @@ import gtkextra
 from math import cos
 
 class Application(gtk.Window):
+    def __del__(self):
+        print 'Application.__del__'
 
     def __init__(self):
         gtk.Window.__init__(self)
@@ -31,8 +33,7 @@ class Application(gtk.Window):
         plot.axis_show_ticks(gtkextra.PLOT_SIDE_ZY, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
         canvas.add_plot(plot, 0.10, 0.06)
 
-        #surface = gtkextra.PlotSurface(self.function) #FIXME SOON
-        surface = gtkextra.PlotSurface()
+        surface = gtkextra.PlotSurface(self.function)
         surface.set_xstep(0.025)
         surface.set_ystep(0.025)
         surface.set_legend("cos ((r-r\\s0\\N)\\S2\\N)")
@@ -77,9 +78,6 @@ class Application(gtk.Window):
         canvas.paint()
         canvas.refresh()
         
-    def mainloop(self):
-        mainloop()
-
     def quit(self, *args):
         gtk.main_quit()
 

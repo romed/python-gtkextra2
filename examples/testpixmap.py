@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from gtk import *
-from gtkextra import *
+import gtk
+import gtkextra
 
-class Application(GtkWindow):
+class Application(gtk.Window):
     
     cloud_xpm = [
         "24 24 5 1",
@@ -73,28 +73,29 @@ class Application(GtkWindow):
         "                        "]
 
     def __init__(self):
-        GtkWindow.__init__(self, title="GtkPlotPixmap Demo")
-        self.set_usize(500, 320)
-        self.connect("destroy", mainquit)
+        gtk.Window.__init__(self)
+        self.connect("destroy", self.quit)
+        self.set_title=("GtkPlot3D Demo")
+        self.set_size_request(550, 650)
 
         colormap = self.get_colormap()
         
-        canvas = GtkPlotCanvas(PLOT_LETTER_W, PLOT_LETTER_H)
-        canvas.plot_canvas_set_flags(PLOT_CANVAS_DND_FLAGS)
+        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         self.add(canvas)
 
-        plot = GtkPlot(width=0.5, height=0.25)
+        plot = gtkextra.Plot(width=0.5, height=0.25)
         plot.set_range(0.0, 1.0, 0.0, 1.4)
         plot.legends_move(0.5, 0.05)
         plot.set_legends_border(0, 0)
-        plot.axis_hide_title(PLOT_AXIS_TOP)
-        plot.axis_show_ticks(PLOT_AXIS_BOTTOM, 15, 3)
-        plot.axis_set_ticks(PLOT_AXIS_X, 1.0, 1)
-        plot.axis_set_ticks(PLOT_AXIS_Y, 1.0, 1)
-        plot.axis_set_visible(PLOT_AXIS_TOP, TRUE)
-        plot.axis_set_visible(PLOT_AXIS_RIGHT, TRUE)
-        plot.x0_set_visible(TRUE)
-        plot.y0_set_visible(TRUE)
+        plot.axis_hide_title(gtkextra.PLOT_AXIS_TOP)
+        plot.axis_show_ticks(gtkextra.PLOT_AXIS_BOTTOM, 15, 3)
+        plot.axis_set_ticks(gtkextra.PLOT_AXIS_X, 1.0, 1)
+        plot.axis_set_ticks(gtkextra.PLOT_AXIS_Y, 1.0, 1)
+        plot.axis_set_visible(gtkextra.PLOT_AXIS_TOP, gtk.TRUE)
+        plot.axis_set_visible(gtkextra.PLOT_AXIS_RIGHT, gtk.TRUE)
+        plot.x0_set_visible(gtk.TRUE)
+        plot.y0_set_visible(gtk.TRUE)
         canvas.add_plot(plot, 0.15, 0.06)
 
         px1 = [0., 0.2, 0.4, 0.6, 0.8, 1.0]
@@ -102,17 +103,18 @@ class Application(GtkWindow):
         px2 = [.0, .2, .4, .6, .8, 1.0]
         py2 = [.12, .22, .27, .12, .52, .62]
 
-        (pixmap, mask) = create_pixmap_from_xpm_d(colormap, None,
-                                                  self.cloud_xpm)
-        data = GtkPlotPixmap(pixmap, mask)
-        data.set_points(px1, py1, px2, py2)
+        (pixmap, mask) = gtk.gdk.pixmap_colormap_create_from_xpm_d(None, colormap,
+                                                                   None, self.cloud_xpm)
+        data = gtkextra.PlotPixmap(pixmap, mask)
+        data.set_points(x=px1, y=py1)
         data.set_legend("Pixmap 1")
         plot.add_data(data)
 
-        (pixmap, mask) = create_pixmap_from_xpm_d(colormap, None,
-                                                  self.suncloud_xpm)
-        data = GtkPlotPixmap(pixmap, mask)
-        data.set_points(px2, py2)
+        (pixmap, mask) = gtk.gdk.pixmap_colormap_create_from_xpm_d(None, colormap,
+                                                                   None, self.suncloud_xpm)
+
+        data = gtkextra.PlotPixmap(pixmap, mask)
+        data.set_points(x=px2, y=py2)
         data.set_legend("Pixmap 2")
         plot.add_data(data)
 
@@ -124,9 +126,10 @@ class Application(GtkWindow):
         except:
             pass
 
-    def mainloop(self):
-        mainloop()
+    def quit(self, *args):
+        gtk.main_quit()
 
 if __name__ == '__main__':		
     app = Application()
-    app.mainloop()
+    #app.connect("destroy", lambda win : gtk.main_quit)
+    gtk.mainloop()
