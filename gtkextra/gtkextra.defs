@@ -720,8 +720,8 @@
   (return-type "GtkIconListItem*")
   (parameters
     '("gchar**" "data")
-    '("const-gchar*" "label")
-    '("gpointer" "link")
+    '("const-gchar*" "label" (default "NULL") (null-ok))
+    '("gpointer" "link" (default "NULL") (null-ok))
   )
 )
 
@@ -4206,7 +4206,7 @@
   (is-constructor-of "GtkPlotPolar")
   (return-type "GtkWidget*")
   (parameters
-    '("GdkDrawable*" "drawable")
+    '("GdkDrawable*" "drawable" (default "NULL") (null-ok))
   )
 )
 
@@ -4214,7 +4214,7 @@
   (c-name "gtk_plot_polar_new_with_size")
   (return-type "GtkWidget*")
   (parameters
-    '("GdkDrawable*" "drawable")
+    '("GdkDrawable*" "drawable" (default "NULL") (null-ok))
     '("gdouble" "width")
     '("gdouble" "height")
   )

@@ -28,6 +28,7 @@ initgtkextra(void)
     pygtkextra_register_classes(d);
     pygtkextra_add_constants(m, "GTK_");
 
+    /* These were #defines's */
     PyModule_AddIntConstant(m, "PLOT_LETTER_W", GTK_PLOT_LETTER_W);
     PyModule_AddIntConstant(m, "PLOT_LETTER_H", GTK_PLOT_LETTER_H);
     PyModule_AddIntConstant(m, "PLOT_LEGAL_W", GTK_PLOT_LEGAL_W);
@@ -37,6 +38,11 @@ initgtkextra(void)
     PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_W", GTK_PLOT_EXECUTIVE_W);
     PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_H", GTK_PLOT_EXECUTIVE_H);
     PyModule_AddIntConstant(m, "PLOT_CANVAS_DND_FLAGS", GTK_PLOT_CANVAS_DND_FLAGS);
+
+    /* These were anonymous enum's. They really should be fixed in gtkextra. */
+    PyModule_AddIntConstant(m, "ICON_LIST_ICON", GTK_ICON_LIST_ICON);
+    PyModule_AddIntConstant(m, "ICON_LIST_TEXT_RIGHT", GTK_ICON_LIST_TEXT_RIGHT);
+    PyModule_AddIntConstant(m, "ICON_LIST_TEXT_BELOW", GTK_ICON_LIST_TEXT_BELOW);
 
     if (PyErr_Occurred())
         Py_FatalError("could not initialise module gtkextra.gtkextra");

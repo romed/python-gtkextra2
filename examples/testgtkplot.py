@@ -92,10 +92,10 @@ class Application(gtk.Window):
             (i, old_x, old_y) = canvas.get_active_point()
             print "Active point: %d -> %f %f" % (i, new_x, new_y)
             data = canvas.get_active_data()
-            points = data.get_points()
-            points[0][i] = new_x
-            points[1][i] = new_y
-            data.set_points(points)
+            x,y,dx,dy = data.get_points()
+            x[i] = new_x
+            y[i] = new_y
+            data.set_points(x=x, y=y)
         return gtk.TRUE
 
     def select_item(self, canvas, event, item, *args):
@@ -179,7 +179,7 @@ class Application(gtk.Window):
 
         data = gtkextra.PlotData()
         plot.add_data(data)
-        data.set_points(px1, py1, dx1, dy1)
+        data.set_points(x=px1, y=py1, dx=dx1, dy=dy1)
         data.set_symbol(gtkextra.PLOT_SYMBOL_DIAMOND, gtkextra.PLOT_SYMBOL_EMPTY, 10, 2, red, red)
         data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 1, red)
         data.set_connector(gtkextra.PLOT_CONNECT_SPLINE)
@@ -190,7 +190,7 @@ class Application(gtk.Window):
 
         data = gtkextra.PlotData()
         plot.add_data(data)
-        data.set_points(px2, py2, dx2, dy2)
+        data.set_points(x=px2, y=py2, dx=dx2, dy=dy2)
         data.set_symbol(gtkextra.PLOT_SYMBOL_SQUARE, gtkextra.PLOT_SYMBOL_OPAQUE, 8, 2, black, black)
         data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 4, red)
         data.set_connector(gtkextra.PLOT_CONNECT_STRAIGHT)
@@ -218,7 +218,7 @@ class Application(gtk.Window):
 
         data = gtkextra.PlotBar(gtk.ORIENTATION_VERTICAL)
         plot.add_data(data)
-        data.set_points(px2, py2, dx2)
+        data.set_points(x=px2, y=py2, dx=dx2)
         data.set_symbol(gtkextra.PLOT_SYMBOL_NONE, gtkextra.PLOT_SYMBOL_OPAQUE, 10, 2, blue, blue)
         data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, blue)
         data.set_connector(gtkextra.PLOT_CONNECT_NONE)

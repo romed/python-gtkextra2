@@ -1,33 +1,35 @@
 #!/usr/bin/env python
 
-from gtk import *
-from gtkextra import *
+import gtk, gtkextra
 
-class Application(GtkWindow):
+class Application(gtk.Window):
 
     def __init__(self):
-        GtkWindow.__init__(self, title="GtkPlotBox Demo")
-        self.set_usize(550, 360)
-        self.connect("destroy", mainquit)
+        self.hack = []
+        gtk.Window.__init__(self)
+        self.set_title("GtkPlotBox Demo")
+        self.set_size_request(550, 360)
+        self.connect("destroy", self.quit)
 
-        scrollwin = GtkScrolledWindow()
-        scrollwin.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+        scrollwin = gtk.ScrolledWindow()
+        scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.add(scrollwin)
 
-        canvas = GtkPlotCanvas(PLOT_LETTER_W, PLOT_LETTER_H)
-        canvas.plot_canvas_set_flags(PLOT_CANVAS_DND_FLAGS)
+        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         scrollwin.add_with_viewport(canvas)
 
-        plot = GtkPlot(width=0.5, height=0.25)
+        plot = gtkextra.Plot()
+        plot.resize(width=0.5, height=0.25)
         plot.set_range(-1.0, 1.0, -1.0, 1.4)
         plot.legends_move(0.51, 0.05)
-        plot.set_legends_border(PLOT_BORDER_NONE)
-        plot.axis_hide_title(PLOT_AXIS_TOP)
-        plot.axis_show_ticks(PLOT_AXIS_BOTTOM, 15, 3)
-        plot.axis_set_ticks(PLOT_AXIS_X, 1.0, 1)
-        plot.axis_set_ticks(PLOT_AXIS_Y, 1.0, 1)
-        plot.x0_set_visible(TRUE);
-        plot.y0_set_visible(TRUE);
+        plot.set_legends_border(gtkextra.PLOT_BORDER_NONE, gtkextra.PLOT_BORDER_NONE)
+        plot.axis_hide_title(gtkextra.PLOT_AXIS_TOP)
+        plot.axis_show_ticks(gtkextra.PLOT_AXIS_BOTTOM, 15, 3)
+        plot.axis_set_ticks(gtkextra.PLOT_AXIS_X, 1.0, 1)
+        plot.axis_set_ticks(gtkextra.PLOT_AXIS_Y, 1.0, 1)
+        plot.x0_set_visible(gtk.TRUE);
+        plot.y0_set_visible(gtk.TRUE);
         canvas.add_plot(plot, 0.15, 0.06)
 
         self.build_example1(plot)
@@ -41,23 +43,24 @@ class Application(GtkWindow):
         dz1 = [0.0243, 0.045, 0.075, 0.0213, 0.05, 0.0324]
 
         colormap = self.get_colormap()
-        red = colormap.alloc("red")
-        yellow = colormap.alloc("yellow")
+        red = colormap.alloc_color("red")
+        yellow = colormap.alloc_color("yellow")
         
-        data = GtkPlotBox(ORIENTATION_VERTICAL)
+        data = gtkextra.PlotBox(gtk.ORIENTATION_VERTICAL)
         plot.add_data(data)
-        data.set_points(px1, py1)
-        data.set_z(pz1)
-        data.set_dz(dz1)
+        data.set_points(x=px1, y=py1, z=pz1, dz=dz1)
         data.show_zerrbars()
-        data.set_symbol(PLOT_SYMBOL_CIRCLE, PLOT_SYMBOL_FILLED, 10, 2,
+        data.set_symbol(gtkextra.PLOT_SYMBOL_CIRCLE, gtkextra.PLOT_SYMBOL_FILLED, 10, 2,
                         yellow, red)
-        data.set_line_attributes(PLOT_LINE_NONE, 1, red)
+        data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, red)
         data.set_legend("Boxes")
+        self.hack.append(data) #FIXME
         
-    def mainloop(self):
-        mainloop()
+    def quit(self, *args):
+        gtk.main_quit()
 
-if __name__ == '__main__':		
+if __name__ == '__main__':
+    raw_input("attach now")
     app = Application()
-    app.mainloop()
+    gtk.main()
+

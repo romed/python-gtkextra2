@@ -254,6 +254,22 @@
   )
 )
 
+(define-boxed IconListItem
+  (in-module "Gtk")
+  (c-name "GtkIconListItem")
+  (gtype-id "GTK_TYPE_ICON_LIST_ITEM")
+  (fields
+    '("guint" "x")
+    '("guint" "y")
+    '("gint" "state")
+    '("gchar*" "entry_label")
+    '("gchar*" "label")
+    '("GtkWidget*" "pixmap")
+    '("GtkWidget*" "entry")
+    ;'("gpointer" "link")
+  )
+)
+
 ;; Enumerations and flags ...
 
 (define-enum PlotPlane

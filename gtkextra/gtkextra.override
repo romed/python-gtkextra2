@@ -1,4 +1,4 @@
-/* -*- Mode: C; c-basic-offset: 4 -*- */
+* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
 /*
@@ -82,7 +82,11 @@ gtk_plot_text_get_type (void)
 }
 
 
-static void gtk_plot_draw_text_PY (GtkPlot *plot, GtkPlotText *text) { gtk_plot_draw_text(plot, *text); }
+static void
+gtk_plot_draw_text_PY (GtkPlot *plot, GtkPlotText *text)
+{
+    gtk_plot_draw_text(plot, *text); 
+}
 
 
 /* This one is probably an "error" in h2def.py */
@@ -90,6 +94,55 @@ static void gtk_plot_draw_text_PY (GtkPlot *plot, GtkPlotText *text) { gtk_plot_
 
 guint16 gtk_plot_canvas_set_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_SET_FLAGS(canvas, flags); }
 guint16 gtk_plot_canvas_unset_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_UNSET_FLAGS(canvas, flags); }
+
+/* cpp abuse.
+*/
+#define _GET_ONE_DOUBLE(_f, _c)  static PyObject * \
+_wrap_##_f(PyGObject *self) \
+{ \
+    gdouble a; \
+    _f(_c(self->obj), &a); \
+    return Py_BuildValue("d", (double) a); \
+}
+
+#define _GET_TWO_DOUBLE(_f, _c)  static PyObject * \
+_wrap_##_f(PyGObject *self) \
+{ \
+    gdouble a, b; \
+    _f(_c(self->obj), &a, &b); \
+    return Py_BuildValue("(dd)", (double) a, (double) b); \
+}
+
+#define _GET_ONE_DOUBLE_VEC(_f, _c) static PyObject * \
+_wrap_##_f(PyGObject *self) \
+{ \
+    PyObject *py_ret; \
+    gdouble *p_d; \
+    gint len_d; \
+\
+    p_d = _f(_c(self->obj), &len_d); \
+\
+    if( !(py_ret = pygtkextra_vec2py(len_d, p_d))) \
+	return NULL; \
+\
+    return py_ret; \
+}
+
+#define _GET_ONE(_x) static PyObject * \
+_wrap_gtk_plot_data_get_##_x(PyGObject *self) \
+{ \
+    PyObject *py_ret; \
+    gdouble *points; \
+    gint num_points; \
+\
+    points = gtk_plot_data_get_##_x(GTK_PLOT_DATA(self->obj), &num_points); \
+\
+    if( !(py_ret = pygtkextra_vec2py(num_points, points))) \
+	return NULL; \
+\
+    return py_ret; \
+}
+
 
 /* ----------------------------------------------------------------------
    Functions for converting Python sequence like objects To/From C arrays.
@@ -109,11 +162,18 @@ guint16 gtk_plot_canvas_unset_flags(GtkPlotCanvas *canvas, guint16 flags) { retu
    
  */
 int
-pygtkextra_get_points(PyObject *sequence, gdouble** out_points)
+pygtkextra_py2vec(PyObject *sequence, gint *p_n, gdouble **p_points)
 {
     int n = 0;
     gdouble *points = NULL;
-    if (PySequence_Check(sequence)) {
+
+    *p_n = 0;
+    *p_points = NULL;
+
+    if (sequence == Py_None || sequence == NULL) {
+	/* done */
+    }
+    else if (PySequence_Check(sequence)) {
 	n = PySequence_Length(sequence);
 	if (n > 0) {
 	    int i;
@@ -130,28 +190,93 @@ pygtkextra_get_points(PyObject *sequence, gdouble** out_points)
 		    points[i] = PyFloat_AS_DOUBLE(value);
 		    Py_DECREF(value);
 		} else {
-#if 0
+#if 1
 		    PyErr_SetString(PyExc_TypeError,
 				    "sequence items must be numbers");
 #endif
 		    Py_DECREF(item);
 		    g_free(points);
-		    points = NULL;
 		    return -1;
 		}
 		Py_DECREF(item);
 	    }
 	}
     } 
-#if 0
-    else if (sequence != Py_None) {
+#if 1
+    else {
 	PyErr_SetString(PyExc_TypeError, "argument must be sequence or None");
-	return -1;
+	return -2;
     }
 #endif
-    *out_points = points;
-    return n;
+    *p_points = points;
+    *p_n = n;
+    return 0;
 }
+
+
+PyObject *
+pygtkextra_vec2py(const gint n, const gdouble *points)
+{
+    PyObject *sequence;
+
+    int i;
+    if (points == NULL) {
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+    
+    if ( !(sequence=PyList_New((int) n)) )
+	return NULL;
+
+    for(i=0; i<n; i++) {
+	PyObject *value;
+	    
+	value = PyFloat_FromDouble(points[i]);
+	if (!value) {
+	    Py_DECREF(sequence);
+	    return NULL;
+	}
+	PyList_SET_ITEM(sequence, i, value);
+    }
+    return sequence;
+}
+
+/*
+ * pygtkextra_convert_pixmap_data_to_vector
+ *
+ * Takes a list of pixmap data strings and puts them into a C vector.
+ * The vector must be freed by the caller.  If the pixmap data cannot
+ * be converted the Python error indicator will be set and NULL will
+ * be returned.
+ */
+char **
+pygtkextra_convert_pixmap_data_to_vector(PyObject *data)
+{
+    int len, i;
+    char **vector;
+
+    if (!PySequence_Check(data)) {
+	PyErr_SetString(PyExc_TypeError, "pixmap data must be a sequence");
+	return NULL;
+    }
+    len = PySequence_Length(data);
+    vector = g_new(char *, len);
+    for (i = 0; i < len; ++i) {
+	PyObject *string;
+
+	string = PySequence_GetItem(data, i);
+	if (!PyString_Check(string)) {
+	    PyErr_SetString(PyExc_TypeError, "sequence items must be strings");
+	    g_free(vector);
+	    Py_DECREF(string);
+	    return NULL;
+	}
+	vector[i] = PyString_AS_STRING(string);
+	Py_DECREF(string);
+    }
+    return vector;
+}
+
 /* ---------------------------------------------------------------------- */
 %%
 modulename gtkextra
@@ -205,41 +330,156 @@ _wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
 }
 
 %%
-override gtk_plot_data_set_points
+override gtk_plot_data_set_points kwargs
 static PyObject *
 _wrap_gtk_plot_data_set_points(PyGObject *self, PyObject *args, PyObject *kwargs)
 {
-    static char *kwlist[] = { "x", "y", "dx", "dy", NULL };
-    gdouble *x, *y, *dx, *dy = NULL;
-    PyObject *py_x, *py_y, *py_dx, *py_dy= NULL;
-    int nx, ny, ndx, ndy;
+    static char *kwlist[] = { "x", "dx", "y", "dy", "z", "dz", "a", "da", NULL };
+    gdouble *x = NULL, *y = NULL, *dx = NULL, *dy = NULL, *z = NULL, *dz = NULL, *a = NULL, *da = NULL;
+    PyObject *py_x = NULL, *py_y = NULL, *py_z = NULL, *py_a = NULL;
+    PyObject *py_dx = NULL, *py_dy = NULL, *py_dz = NULL,  *py_da = NULL;
+    int rx, nx, rdx, ndx, ry, ny, rdy, ndy, rz, nz, rdz, ndz, ra, na, rda, nda;
+    gint num_points=0;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOO:GtkPlotData.set_points", kwlist,
-				     &py_x, &py_y, &py_dx, &py_dy ))
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOOOOOO:GtkPlotData.set_points", kwlist,
+				     &py_x, &py_dx, &py_y, &py_dy, &py_z, &py_dz, &py_a, &py_da ))
         return NULL;
 
-    nx = pygtkextra_get_points( py_x, &x );
-    ny = pygtkextra_get_points( py_y, &y );
-    ndx = pygtkextra_get_points( py_dx, &dx );
-    ndy = pygtkextra_get_points( py_dy, &dy );
-    
-    printf("%d %d %d %d\n", nx, ny, ndx, ndy);
+    rx = pygtkextra_py2vec( py_x, &nx, &x );
+    ry = pygtkextra_py2vec( py_y, &ny, &y );
+    rz = pygtkextra_py2vec( py_z, &nz, &z );
+    ra = pygtkextra_py2vec( py_a, &na, &a );
+    rdx = pygtkextra_py2vec( py_dx, &ndx, &dx );
+    rdy = pygtkextra_py2vec( py_dy, &ndy, &dy );
+    rdz = pygtkextra_py2vec( py_dz, &ndz, &dz );
+    rda = pygtkextra_py2vec( py_da, &nda, &da );
 
-    gtk_plot_data_set_points(GTK_PLOT_DATA(self->obj), x, y, dx, dy, nx);
-    gtk_plot_data_set_points(GTK_PLOT_DATA(self->obj), x, y, dx, dy, nx);
+    printf("n: %d %d %d %d %d %d %d %d\n", nx, ny, ndx, ndy, nz, ndz, na, nda);
+    printf("r: %d %d %d %d %d %d %d %d\n", rx, ry, rdx, rdy, rz, rdz, ra, rda);
+
+
+    if ( (rx < 0) || (ry < 0) || (rdx < 0) || (rdy < 0) 
+	 || (rz < 0) || (rdz < 0) || (rda < 0) || (rda < 0) )
+	return NULL;
+    num_points = MAX(nx, ndx);
+    num_points = MAX(num_points, ny);
+    num_points = MAX(num_points, ndy);
+    num_points = MAX(num_points, nz);
+    num_points = MAX(num_points, ndz);
+    num_points = MAX(num_points, na);
+    num_points = MAX(num_points, nda);
+
+    if ( (rx && (nx != num_points))
+	 || (rdx && (ndx != num_points))
+	 || (ry && (ny != num_points))
+	 || (rdy && (ndy != num_points))
+	 || (rz && (nz != num_points))
+	 || (rdz && (ndz != num_points))
+	 || (ra && (na != num_points))
+	 || (rda && (nda != num_points)) ) {
+	PyErr_SetString(PyExc_TypeError, "argments must have same length");
+    }
+
+    gtk_plot_data_set_numpoints(GTK_PLOT_DATA(self->obj), num_points);
+    if (py_x)  gtk_plot_data_set_x  (GTK_PLOT_DATA(self->obj), x);
+    if (py_dx) gtk_plot_data_set_dx (GTK_PLOT_DATA(self->obj), dx);
+    if (py_y)  gtk_plot_data_set_y  (GTK_PLOT_DATA(self->obj), y);
+    if (py_dy) gtk_plot_data_set_dy (GTK_PLOT_DATA(self->obj), dy);
+    if (py_z)  gtk_plot_data_set_z  (GTK_PLOT_DATA(self->obj), z);
+    if (py_dz) gtk_plot_data_set_dz (GTK_PLOT_DATA(self->obj), dz);
+    if (py_a)  gtk_plot_data_set_a  (GTK_PLOT_DATA(self->obj), a);
+    if (py_da) gtk_plot_data_set_da (GTK_PLOT_DATA(self->obj), da);
 
     Py_INCREF(Py_None);
     return Py_None;
-
-
 }
-#if 0
-void 		gtk_plot_data_set_points212	(GtkPlotData *data,
-						 gdouble *x, gdouble *y,
-						 gdouble *dx, gdouble *dy,
-                                                 gint num_points);
-#endif
 
+%%
+override gtk_plot_data_get_points noargs
+static PyObject *
+_wrap_gtk_plot_data_get_points(PyGObject *self)
+{
+    PyObject *py_x, *py_y, *py_dx, *py_dy;
+    gdouble *x, *y, *dx, *dy;
+    gint num_points;
+
+    gtk_plot_data_get_points(GTK_PLOT_DATA(self->obj), &x, &y, &dx, &dy, &num_points);
+
+    if( !(py_x = pygtkextra_vec2py(num_points, x)))
+	return NULL;
+    if( !(py_y = pygtkextra_vec2py(num_points, y))) {
+	Py_DECREF(py_x);
+	return NULL;
+    }
+    if( !(py_dx = pygtkextra_vec2py(num_points, dx))) {
+	Py_DECREF(py_x);
+	Py_DECREF(py_y);
+	return NULL;
+    }
+    if( !(py_dy = pygtkextra_vec2py(num_points, dy))) {
+	Py_DECREF(py_x);
+	Py_DECREF(py_y);
+	Py_DECREF(py_dx);
+	return NULL;
+    }
+    return Py_BuildValue("(OOOO)", py_x, py_y, py_dx, py_dy);
+}
+
+%%
+override gtk_plot_data_get_x noargs
+_GET_ONE(x)
+
+%%
+override gtk_plot_data_get_y noargs
+_GET_ONE(y)
+
+%%
+override gtk_plot_data_get_z noargs
+_GET_ONE(z)
+
+%%
+override gtk_plot_data_get_a noargs
+_GET_ONE(a)
+
+%%
+override gtk_plot_data_get_dx noargs
+_GET_ONE(dx)
+
+%%
+override gtk_plot_data_get_dy noargs
+_GET_ONE(dy)
+
+%%
+override gtk_plot_data_get_dz noargs
+_GET_ONE(dz)
+
+%%
+override gtk_plot_data_get_da noargs
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_da, GTK_PLOT_DATA)
+
+%%
+override gtk_plot_canvas_get_active_point noargs
+static PyObject *
+_wrap_gtk_plot_canvas_get_active_point(PyGObject *self)
+{
+    gint active_point;
+    gdouble x, y;
+
+    active_point = gtk_plot_canvas_get_active_point(GTK_PLOT_CANVAS(self->obj), &x, &y);
+    return Py_BuildValue("(idd)", (int) active_point, (double) x, (double) y);
+}
+
+%%
+override gtk_plot_get_xrange noargs
+_GET_TWO_DOUBLE(gtk_plot_get_xrange, GTK_PLOT)
+
+%%
+override gtk_plot_get_position noargs
+_GET_TWO_DOUBLE(gtk_plot_get_position, GTK_PLOT)
+
+%%
+override gtk_plot_get_size noargs
+_GET_TWO_DOUBLE(gtk_plot_get_size, GTK_PLOT)
 
 
 %%
