@@ -1,5 +1,5 @@
-pygtkextradir = $(pythondir)/gtkextra
-pygtkextraexecdir = $(pyexecdir)/gtkextra
+pygtkextradir = $(pythondir)/gtk-2.0/gtkextra
+pygtkextraexecdir = $(pyexecdir)/gtk-2.0/gtkextra
 
 pygtkextra_PYTHON = \
   __init__.py \

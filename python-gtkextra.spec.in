@@ -40,11 +40,11 @@ make DESTDIR=$RPM_BUILD_ROOT install
 
 %files
 %defattr(644, root, root, 755)
-%dir %{_prefix}/lib/python?.?/site-packages/gtkextra
-%{_prefix}/lib/python?.?/site-packages/gtkextra/*.py*
+%dir %{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtkextra
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtkextra/*.py*
 
 %defattr(755, root, root, 755)
-%{_prefix}/lib/python?.?/site-packages/gtkextra/_gtkextramodule.so
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtkextra/_gtkextramodule.so
 
 %doc AUTHORS NEWS README ChangeLog
 %doc examples
@@ -52,7 +52,7 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %files devel
 %defattr(755, root, root, 755)
 %{_prefix}/lib/pkgconfig/python-gtkextra.pc
-%{_prefix}/lib/python?.?/site-packages/gtkextra/_gtkextramodule.la
+%{_prefix}/lib/python?.?/site-packages/gtk-2.0/gtkextra/_gtkextramodule.la
 %dir %{_prefix}/share/pygtk/2.0/defs
 %{_prefix}/share/pygtk/2.0/defs/gtkextra.defs
 %{_prefix}/share/pygtk/2.0/defs/gtkextra-types.defs

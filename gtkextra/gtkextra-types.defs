@@ -2,7 +2,7 @@
 
 ; object definitions ...
 ; As for fields, I'm not sure which are safe to expose.
-; I also have no scrubbed which are set by functions.
+; I also have not scrubbed which are set by functions.
 ; Somebody can help me here.
 
 (define-object CharSelection
