@@ -5720,7 +5720,7 @@
 (define-method cell_get_text
   (of-object "GtkSheet")
   (c-name "gtk_sheet_cell_get_text")
-  (return-type "gchar*" (null-ok))
+  (return-type "const-gchar*" (null-ok))
   (parameters
     '("gint" "row")
     '("gint" "col")
