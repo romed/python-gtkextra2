@@ -129,20 +129,45 @@ gtk_plot_marker_get_type (void)
   return our_type;
 }
 
+GtkPlotText*
+gtk_plot_text_copy (const GtkPlotText *text)
+{
+    /* FIXME: am I correct? */
+    GtkPlotText *copy;
+    g_return_val_if_fail (text != NULL, NULL);
+    copy = g_new (GtkPlotText, 1);
+    *copy = *text;
+    copy->font = g_strdup(text->font);
+    copy->text = g_strdup(text->text);
+    return copy;
+}
+
+void
+gtk_plot_text_free (GtkPlotText *text)
+{
+    /* FIXME: am I correct? */
+    g_return_if_fail (text != NULL);
+    if (text->font)
+	g_free(text->font);
+    if (text->text)
+	g_free(text->text);
+    g_free (text);
+}
+
 #define GTK_TYPE_PLOT_TEXT (gtk_plot_text_get_type ())
 static GType
 gtk_plot_text_get_type (void)
 {
   static GType our_type = 0;
 
-#if 1 //HACK 
+#if 0 //HACK 
   if (our_type == 0)
     our_type = g_pointer_type_register_static ("GtkPlotText");
 #else //Should be something similiar to this
   if (our_type == 0)
     our_type = g_boxed_type_register_static ("GtkPlotText",
-					     (GBoxedCopyFunc) gtk_plot_text_ref,
-					     (GBoxedFreeFunc) gtk_plot_text_unref);
+					     (GBoxedCopyFunc) gtk_plot_text_copy,
+					     (GBoxedFreeFunc) gtk_plot_text_free);
 #endif
   return our_type;
 }
