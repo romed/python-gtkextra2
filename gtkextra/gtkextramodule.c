@@ -17,7 +17,7 @@ extern PyMethodDef pygtkextra_functions[];
 DL_EXPORT(void)
 init_gtkextra(void)
 {
-    PyObject *m, *d, *module;
+    PyObject *m, *d;
 
     m = Py_InitModule("gtkextra._gtkextra", pygtkextra_functions);
     d = PyModule_GetDict(m);
