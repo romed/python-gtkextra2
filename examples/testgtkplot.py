@@ -185,7 +185,10 @@ class Application(gtk.Window):
         data.set_connector(gtkextra.PLOT_CONNECT_SPLINE)
         data.show_yerrbars()
         data.set_legend("Spline + EY")
-
+        data.show_labels(gtk.TRUE)
+        data.set_labels(['0', '1', '2', '3', '4', '5'])
+        data.set_labels(['0', '1', '2', '3', '4', '99'])
+        
         data = gtkextra.PlotData()
         plot.add_data(data)
         data.set_points(x=px2, y=py2, dx=dx2, dy=dy2)

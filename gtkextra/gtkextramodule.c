@@ -59,6 +59,8 @@ init_gtkextra(void)
 
 #undef _ADD_CONST
 
+    gtk_psfont_init();
+
     if (PyErr_Occurred())
         Py_FatalError("could not initialise module gtkextra._gtkextra");
 }

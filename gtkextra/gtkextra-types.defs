@@ -359,6 +359,26 @@
   )
 )
 
+(define-boxed PlotDTnode
+  (in-module "Gtk")
+  (c-name "GtkPlotDTnode")
+  (gtype-id "GTK_TYPE_PLOT_DT_NODE")
+  (fields
+    '("gdouble" "x")
+    '("gdouble" "y")
+    '("gdouble" "z")
+    '("gdouble" "px")
+    '("gdouble" "py")
+    '("gdouble" "pz")
+    '("gint" "id")
+    '("gint" "a")
+    '("gint" "b")
+    '("gint" "c")
+    '("gint" "d")
+    '("gint" "boundary_marker")
+  )
+)
+
 ;; Enumerations and flags ...
 
 (define-enum IconListMode

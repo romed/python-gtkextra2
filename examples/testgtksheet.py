@@ -653,6 +653,9 @@ class Application(gtk.Window):
         mainloop()
 
 if __name__ == '__main__':		
+    print 'The Python binding for GtkSheet are not complete.'
+    print 'Patches will be accepted if you fix them.'
+    raw_input("Press enter to see what done so far.")
     app = Application()
     app.connect("destroy", lambda win : gtk.main_quit())
     gtk.main()
