@@ -2176,6 +2176,15 @@
   )
 )
 
+(define-method clone
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_clone")
+  (return-type "none")
+  (parameters
+    '("GtkPlotData" "copy")
+  )
+)
+
 (define-method paint
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_paint")

@@ -79,7 +79,7 @@ class Application(gtk.Window):
 
         colormap = self.get_colormap()
         
-        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        self.canvas = canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
         canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         self.add(canvas)
 

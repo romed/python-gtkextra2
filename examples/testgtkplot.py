@@ -20,6 +20,7 @@ class Application(gtk.Window):
         gtk.Window.__init__(self)
         self.set_title("GtkPlot Demo")
         self.set_size_request(550, 650)
+        #self.set_size_request(page_width, page_height)
 
         scrollwin = gtk.ScrolledWindow()
         scrollwin.set_policy(gtk.POLICY_ALWAYS, gtk.POLICY_ALWAYS)
@@ -29,7 +30,7 @@ class Application(gtk.Window):
         light_yellow = colormap.alloc_color("light yellow")
         light_blue = colormap.alloc_color("light blue")
 
-        canvas = gtkextra.PlotCanvas(page_width, page_height)
+        self.canvas = canvas = gtkextra.PlotCanvas(page_width, page_height)
         canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         scrollwin.add_with_viewport(canvas)
         canvas.set_size(page_width, page_height)

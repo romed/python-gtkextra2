@@ -30,8 +30,16 @@ headers
 #include <gtkextra/gtkextratypebuiltins.h>
 
 static PyObject *pygtkextra_data_from_pyobject_callback = NULL;
-static const gchar *function_key = "pygtkextra::function";
-static const gchar *iterator_key = "pygtkextra::iterator";
+static const gchar *const function_key = "pygtkextra::function";
+static const gchar *const iterator_key = "pygtkextra::iterator";
+static const gchar *const labels_key = "pygtkextra::labels[]";
+
+static gchar * pygtkextra_keys[] = {
+    "pygtkextra::function",
+    "pygtkextra::iterator",
+    "pygtkextra::labels[]",
+    "x", "y", "z", "a", "dx", "dy", "dz", "da"
+};
 
 /*
   This exists in pygtk/gtk/gtk-types.c.  It is not static there, but 
@@ -1036,7 +1044,7 @@ _wrap_gtk_plot_data_set_labels(PyGObject *self, PyObject *args, PyObject *kwargs
 
     labels = g_new0(char *, num_labels+1);
     py_c_obj = PyCObject_FromVoidPtr(labels, (void*) g_strfreev);
-    pygtkextra_set_data(self, "pygtkextra::labels[]", py_c_obj);
+    pygtkextra_set_data(self, labels_key, py_c_obj);
     Py_DECREF(py_c_obj);
 
     for (i=0 ; i<num_labels; i++) {
@@ -1144,6 +1152,31 @@ _wrap_gtk_plot_data_get_gradient(PyGObject *self)
     gtk_plot_data_get_gradient( GTK_PLOT_DATA(self->obj),
 				&min, &max, &nlevels, &nsublevels);
     return Py_BuildValue("(ddii)", &min, &max, &nlevels, &nsublevels);
+}
+%%
+override gtk_plot_data_clone noargs
+static PyObject *
+_wrap_gtk_plot_data_clone(PyGObject *self)
+{
+    GtkPlotData *copy;
+    PyObject *py_copy;
+    int i;
+
+    copy = gtk_type_new(G_OBJECT_TYPE(self->obj));
+    if (!copy) {
+	PyErr_SetString(PyExc_RuntimeError, "could not create new object");
+	return NULL;
+    }
+
+    py_copy = pygobject_new((GObject*)copy);
+    gtk_plot_data_clone(GTK_PLOT_DATA(self->obj), copy);
+
+    for (i=0; i < G_N_ELEMENTS(pygtkextra_keys); i++) {
+	const char *key  = pygtkextra_keys[i];
+	pygtkextra_set_data( (PyGObject*)py_copy, key, pygtkextra_get_data(self, key));
+    }
+
+    return py_copy;
 }
 %%
 ignore

@@ -1,1 +1,4 @@
-FIXME
+This package provided a Python interface to the GtkExtra2 widget set for GTK2.
+Its home on the web is <http://python-gtkextra.sourceforge.net>.
+
+Toby D. Reeves <treeves@users.sourceforge.net>.

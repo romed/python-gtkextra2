@@ -18,7 +18,7 @@ class Application(gtk.Window):
         scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.add(scrollwin)
 
-        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        self.canvas = canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
         canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         scrollwin.add_with_viewport(canvas)
 

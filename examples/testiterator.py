@@ -22,7 +22,7 @@ class Application(gtk.Window):
         scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.add(scrollwin)
 
-        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        self.canvas = canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
         canvas.set_background(light_blue)
         scrollwin.add_with_viewport(canvas)
 
