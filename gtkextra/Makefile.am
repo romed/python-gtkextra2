@@ -10,7 +10,7 @@ EXTRA_DIST = $(defs_DATA)
 CLEANFILES =
 
 pkgincludedir = $(includedir)/pygtkextra-2.0/pygtkextra
-pkginclude_HEADERS = pygtkextra.h
+pkginclude_HEADERS = 
 
 INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) -Wall
 #COMMONDEFS = $(srcdir)/gtkextra-types.defs 
