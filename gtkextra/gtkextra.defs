@@ -2414,7 +2414,7 @@
     '("gint" "size")
     '("gfloat" "line_width")
     '("const-GdkColor*" "color")
-    '("const-GdkColor*" "border_color" (default "NULL") (null-ok))
+    '("const-GdkColor*" "border_color")
   )
 )
 

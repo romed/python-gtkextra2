@@ -31,6 +31,7 @@ headers
 
 static PyObject *pygtkextra_data_from_pyobject_callback = NULL;
 static const gchar *function_key = "pygtkextra::function";
+static const gchar *iterator_key = "pygtkextra::iterator";
 
 /*
   This exists in pygtk/gtk/gtk-types.c.  It is not static there, but 
@@ -404,6 +405,111 @@ pygtkextra_plot_function_3D (GtkPlot *plot,
     return z;
 }
 
+static gint
+pygtkextra_get_double(PyObject *py_obj, gdouble *pd)
+{
+    PyObject *py_value;
+
+    if (PyFloat_Check(py_obj)) {
+	*pd = PyFloat_AS_DOUBLE(py_obj);
+	return 0;
+    } else if (PyNumber_Check(py_obj) && (py_value = PyNumber_Float(py_obj))) {
+	*pd = PyFloat_AS_DOUBLE(py_value);
+	Py_DECREF(py_value);
+	return 0;
+    }
+    return -1;
+}
+
+static void
+pygtkextra_plot_iterator (GtkPlot *plot,
+			  GtkPlotData *data, 
+			  gint iter, 
+			  gdouble *x, 
+			  gdouble *y, 
+			  gdouble *z,
+			  gdouble *a,
+			  gdouble *dx, 
+			  gdouble *dy, 
+			  gdouble *dz,
+			  gdouble *da,
+			  gchar **label,
+			  gboolean *error)
+{
+    PyObject *py_iterator = NULL, *py_result = NULL, *py_data = NULL, *py_plot = NULL;
+
+    py_data = pygobject_new((GObject*) data);
+    py_plot = pygobject_new((GObject*) plot);
+    py_iterator = pygtkextra_get_data((PyGObject*) py_data, iterator_key);
+
+    *error = FALSE;
+
+    if (py_iterator == Py_None) {
+	PyErr_SetString(PyExc_TypeError, "could not retrieve the python plot iterator");
+	goto cleanup;
+    }
+    py_result = PyEval_CallFunction(py_iterator, "(OOi)", py_plot, py_data, iter);
+    if (py_result) {
+	int i, mask_bit_cnt=0;
+
+	if (!PyTuple_Check(py_result)) {
+	    PyErr_SetString(PyExc_TypeError, "plot iterator must return a tuple");
+	    goto cleanup;
+	}
+	
+	for (i = 0; i < 9 ; i++)
+	    if (data->iterator_mask & (0x1 << i))
+		mask_bit_cnt ++;
+	
+	if ( PyTuple_GET_SIZE(py_result) != mask_bit_cnt ) {
+	    PyErr_SetString(PyExc_TypeError, "iterator_mask and iterator fuction's results are mismatched");
+	    goto cleanup;
+	}
+	
+	i = 0;
+
+#define _DO_ONE(_x, _X) \
+	if ( data->iterator_mask & GTK_PLOT_DATA_ ## _X) { \
+	    if ( pygtkextra_get_double(PyTuple_GET_ITEM(py_result, i++), _x)) { \
+		PyErr_SetString(PyExc_TypeError, #_x " must be a number"); \
+		goto cleanup; \
+	    } \
+	}
+
+	_DO_ONE(x, X);
+	_DO_ONE(y, Y);
+	_DO_ONE(z, Z);
+	_DO_ONE(a, A);
+	_DO_ONE(dx, DX);
+	_DO_ONE(dy, DY);
+	_DO_ONE(dz, DZ);
+	_DO_ONE(da, DA);
+
+#undef _DO_ONE
+
+	if ( data->iterator_mask & GTK_PLOT_DATA_LABELS) {
+	    PyObject *py_value = PyTuple_GET_ITEM(py_result, i);
+	    if ( !PyString_Check(py_value) ) {
+		PyErr_SetString(PyExc_TypeError, "label must be a string");
+		goto cleanup;
+	    }
+	    *label = PyString_AS_STRING(py_value); /* FIXME: Is this safe here? */
+	}
+    }
+
+ cleanup:
+    if (PyErr_Occurred()) {
+	*error = TRUE;
+	PyErr_Print();
+	PyErr_Clear();
+    }
+
+    Py_XDECREF(py_iterator);
+    Py_XDECREF(py_result);
+    Py_XDECREF(py_data);
+    Py_XDECREF(py_plot);
+}
+
 /* ---------------------------------------------------------------------- */
 %%
 modulename gtkextra
@@ -453,6 +559,53 @@ _wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
     default:
 	return PyCObject_FromVoidPtr(pyg_pointer_get(self, GtkPlotCanvasChild)->data, NULL);
     }
+}
+%%
+override gtk_plot_data_new kwargs
+static int
+_wrap_gtk_plot_data_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist1[] = { NULL };
+    static char *kwlist2[] = { "function", NULL };
+    static char *kwlist3[] = { "iterator", "npoints", "iterator_mask", NULL };
+    PyObject *function, *iterator;
+    gint npoints, iterator_mask;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, ":GtkPlotData.__init__", kwlist1)) {
+	self->obj = (GObject *)gtk_plot_data_new();
+    }
+    else if (PyErr_Clear(), 
+	     PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkPlotData.__init__",
+					 kwlist2, &function)) {
+	if (!PyCallable_Check(function)) {
+	    PyErr_SetString(PyExc_RuntimeError, "function argument must be callable");
+	    return -1;
+	}
+	self->obj = (GObject *)gtk_plot_data_new_function(pygtkextra_plot_function);
+	if(self->obj)
+	    pygtkextra_set_data(self, function_key, function);
+    }
+    else if (PyErr_Clear(),
+	     PyArg_ParseTupleAndKeywords(args, kwargs, "Oii:GtkPlotData.__init__",
+					 kwlist3, &iterator, &npoints, &iterator_mask)) {
+	if (!PyCallable_Check(iterator)) {
+	    PyErr_SetString(PyExc_RuntimeError, "iterator argument must be callable");
+	    return -1;
+	}
+
+	self->obj = (GObject *)gtk_plot_data_new_iterator(pygtkextra_plot_iterator, npoints, iterator_mask);
+	if(self->obj)
+	    pygtkextra_set_data(self, iterator_key, iterator);
+    }
+    else
+        return -1;
+
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkPlotData object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
 }
 %%
 override gtk_plot_data_set_points kwargs
@@ -686,6 +839,8 @@ _wrap_gtk_plot_data__set_da(PyGObject *self, PyObject *value, void *closure)
 }
 %%
 ignore
+  gtk_plot_data_construct_function
+  gtk_plot_data_construct_iterator
   gtk_plot_data_get_points
   gtk_plot_data_get_x
   gtk_plot_data_get_dx

@@ -28,21 +28,36 @@ init_gtkextra(void)
     pygtkextra_register_classes(d);
     pygtkextra_add_constants(m, "GTK_");
 
+#define _ADD_CONST( _x ) \
+    PyModule_AddIntConstant(m, #_x, GTK_ ## _x);
+
     /* These were #defines's */
-    PyModule_AddIntConstant(m, "PLOT_LETTER_W", GTK_PLOT_LETTER_W);
-    PyModule_AddIntConstant(m, "PLOT_LETTER_H", GTK_PLOT_LETTER_H);
-    PyModule_AddIntConstant(m, "PLOT_LEGAL_W", GTK_PLOT_LEGAL_W);
-    PyModule_AddIntConstant(m, "PLOT_LEGAL_H", GTK_PLOT_LEGAL_H);
-    PyModule_AddIntConstant(m, "PLOT_A4_W", GTK_PLOT_A4_W);
-    PyModule_AddIntConstant(m, "PLOT_A4_H", GTK_PLOT_A4_H);
-    PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_W", GTK_PLOT_EXECUTIVE_W);
-    PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_H", GTK_PLOT_EXECUTIVE_H);
-    PyModule_AddIntConstant(m, "PLOT_CANVAS_DND_FLAGS", GTK_PLOT_CANVAS_DND_FLAGS);
+    _ADD_CONST(PLOT_LETTER_W);
+    _ADD_CONST(PLOT_LETTER_H);
+    _ADD_CONST(PLOT_LEGAL_W);
+    _ADD_CONST(PLOT_LEGAL_H);
+    _ADD_CONST(PLOT_A4_W);
+    _ADD_CONST(PLOT_A4_H);
+    _ADD_CONST(PLOT_EXECUTIVE_W);
+    _ADD_CONST(PLOT_EXECUTIVE_H);
+    _ADD_CONST(PLOT_CANVAS_DND_FLAGS);
 
     /* These were anonymous enum's. They really should be fixed in gtkextra. */
-    PyModule_AddIntConstant(m, "ICON_LIST_ICON", GTK_ICON_LIST_ICON);
-    PyModule_AddIntConstant(m, "ICON_LIST_TEXT_RIGHT", GTK_ICON_LIST_TEXT_RIGHT);
-    PyModule_AddIntConstant(m, "ICON_LIST_TEXT_BELOW", GTK_ICON_LIST_TEXT_BELOW);
+    _ADD_CONST(ICON_LIST_ICON);
+    _ADD_CONST(ICON_LIST_TEXT_RIGHT);
+    _ADD_CONST(ICON_LIST_TEXT_BELOW);
+
+    _ADD_CONST(PLOT_DATA_X);
+    _ADD_CONST(PLOT_DATA_Y);
+    _ADD_CONST(PLOT_DATA_Z);
+    _ADD_CONST(PLOT_DATA_A);
+    _ADD_CONST(PLOT_DATA_DX);
+    _ADD_CONST(PLOT_DATA_DY);
+    _ADD_CONST(PLOT_DATA_DZ);
+    _ADD_CONST(PLOT_DATA_DA);
+    _ADD_CONST(PLOT_DATA_LABELS);
+
+#undef _ADD_CONST
 
     if (PyErr_Occurred())
         Py_FatalError("could not initialise module gtkextra._gtkextra");
