@@ -1,13 +1,12 @@
 ;; -*- scheme -*-
 
-;; Use newer cvs version not what is stock on RH 7.3
-;; python2 ~/gnome-cvs/gnome-python/pygtk/codegen/h2def.py /usr/include/gtk-2.0/gtkextra/*.h >gtkextra_.defs
-;; Then merge old defs with new defs with mergedefs.py (for fields)
+;; python ~/gnome-cvs/gnome-python/pygtk/codegen/h2def.py /usr/include/gtkextra-2.0/gtkextra/*.h >gtkextra_.defs
+;; Then merge old defs with new defs with mergedefs.py for fields and default values.
+;; python ~/gnome-cvs/gnome-python/pygtk/codegen/mergedefs.py gtkextra_.defs gtkextra.defs > gtkextra_merged.defs
+;; Then redo include's.
 
 (include "gtkextra-types.defs")
 (include "gtkextra-addons.defs")
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkbordercombo.h
 
 (define-function gtk_border_combo_get_type
   (c-name "gtk_border_combo_get_type")
@@ -15,14 +14,10 @@
 )
 
 (define-function gtk_border_combo_new
-  (c-name "gtk_border_combo_new")
   (is-constructor-of "GtkBorderCombo")
+  (c-name "gtk_border_combo_new")
   (return-type "GtkWidget*")
 )
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkcharsel.h
 
 (define-function gtk_char_selection_get_type
   (c-name "gtk_char_selection_get_type")
@@ -30,8 +25,8 @@
 )
 
 (define-function gtk_char_selection_new
-  (c-name "gtk_char_selection_new")
   (is-constructor-of "GtkCharSelection")
+  (c-name "gtk_char_selection_new")
   (return-type "GtkWidget*")
 )
 
@@ -50,18 +45,14 @@
   (return-type "gint")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkcheckitem.h
-
 (define-function gtk_check_item_get_type
   (c-name "gtk_check_item_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_check_item_new
-  (c-name "gtk_check_item_new")
   (is-constructor-of "GtkCheckItem")
+  (c-name "gtk_check_item_new")
   (return-type "GtkWidget*")
 )
 
@@ -82,18 +73,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkcolorcombo.h
-
 (define-function gtk_color_combo_get_type
   (c-name "gtk_color_combo_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_color_combo_new
-  (c-name "gtk_color_combo_new")
   (is-constructor-of "GtkColorCombo")
+  (c-name "gtk_color_combo_new")
   (return-type "GtkWidget*")
 )
 
@@ -103,7 +90,7 @@
   (parameters
     '("gint" "nrows")
     '("gint" "ncols")
-    '("gchar**" "color_names")
+    '("GdkColor*" "colors")
   )
 )
 
@@ -120,14 +107,14 @@
   (parameters
     '("gint" "nrows")
     '("gint" "ncols")
-    '("gchar**" "color_names")
+    '("GdkColor*" "colors")
   )
 )
 
 (define-method get_color_at
   (of-object "GtkColorCombo")
   (c-name "gtk_color_combo_get_color_at")
-  (return-type "gchar*")
+  (return-type "GdkColor")
   (parameters
     '("gint" "row")
     '("gint" "col")
@@ -145,9 +132,11 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkcombobox.h
+(define-method get_selection
+  (of-object "GtkColorCombo")
+  (c-name "gtk_color_combo_get_selection")
+  (return-type "GdkColor")
+)
 
 (define-function gtk_combobox_get_type
   (c-name "gtk_combobox_get_type")
@@ -155,8 +144,8 @@
 )
 
 (define-function gtk_combobox_new
-  (c-name "gtk_combobox_new")
   (is-constructor-of "GtkCombobox")
+  (c-name "gtk_combobox_new")
   (return-type "GtkWidget*")
 )
 
@@ -166,18 +155,14 @@
   (return-type "none")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkdirtree.h
-
 (define-function gtk_dir_tree_get_type
   (c-name "gtk_dir_tree_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_dir_tree_new
-  (c-name "gtk_dir_tree_new")
   (is-constructor-of "GtkDirTree")
+  (c-name "gtk_dir_tree_new")
   (return-type "GtkWidget*")
 )
 
@@ -190,10 +175,6 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkextrafeatures.h
-
 (define-function gtkextra_check_version
   (c-name "gtkextra_check_version")
   (return-type "gchar*")
@@ -204,17 +185,10 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkextra.h
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkextra-marshal.h
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkextratypebuiltins.h
+(define-function gtk_plot_scale_get_type
+  (c-name "gtk_plot_scale_get_type")
+  (return-type "GType")
+)
 
 (define-function gtk_plot_symbol_type_get_type
   (c-name "gtk_plot_symbol_type_get_type")
@@ -286,6 +260,11 @@
   (return-type "GType")
 )
 
+(define-function gtk_plot_projection_get_type
+  (c-name "gtk_plot_projection_get_type")
+  (return-type "GType")
+)
+
 (define-function gtk_plot_canvas_action_get_type
   (c-name "gtk_plot_canvas_action_get_type")
   (return-type "GType")
@@ -321,18 +300,25 @@
   (return-type "GType")
 )
 
+(define-function gtk_plot_page_size_get_type
+  (c-name "gtk_plot_page_size_get_type")
+  (return-type "GType")
+)
+
+(define-function gtk_plot_page_orientation_get_type
+  (c-name "gtk_plot_page_orientation_get_type")
+  (return-type "GType")
+)
+
+(define-function gtk_plot_units_get_type
+  (c-name "gtk_plot_units_get_type")
+  (return-type "GType")
+)
+
 (define-function gtk_sheet_attr_type_get_type
   (c-name "gtk_sheet_attr_type_get_type")
   (return-type "GType")
 )
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkfileicons.h
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkfilelist.h
 
 (define-function gtk_file_list_get_type
   (c-name "gtk_file_list_get_type")
@@ -340,8 +326,8 @@
 )
 
 (define-function gtk_file_list_new
-  (c-name "gtk_file_list_new")
   (is-constructor-of "GtkFileList")
+  (c-name "gtk_file_list_new")
   (return-type "GtkWidget*")
   (parameters
     '("guint" "icon_width")
@@ -382,13 +368,13 @@
 (define-method get_path
   (of-object "GtkFileList")
   (c-name "gtk_file_list_get_path")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
 )
 
 (define-method get_filename
   (of-object "GtkFileList")
   (c-name "gtk_file_list_get_filename")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
 )
 
 (define-method get_filetype
@@ -406,6 +392,16 @@
   )
 )
 
+(define-method add_type_with_pixmap
+  (of-object "GtkFileList")
+  (c-name "gtk_file_list_add_type_with_pixmap")
+  (return-type "gint")
+  (parameters
+    '("GdkPixmap*" "pixmap")
+    '("GdkBitmap*" "mask")
+  )
+)
+
 (define-method add_type_filter
   (of-object "GtkFileList")
   (c-name "gtk_file_list_add_type_filter")
@@ -416,18 +412,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkfontcombo.h
-
 (define-function gtk_font_combo_get_type
   (c-name "gtk_font_combo_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_font_combo_new
-  (c-name "gtk_font_combo_new")
   (is-constructor-of "GtkFontCombo")
+  (c-name "gtk_font_combo_new")
   (return-type "GtkWidget*")
 )
 
@@ -479,18 +471,14 @@
   (return-type "GdkFont*")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkiconfilesel.h
-
 (define-function gtk_icon_file_selection_get_type
   (c-name "gtk_icon_file_selection_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_icon_file_selection_new
-  (c-name "gtk_icon_file_selection_new")
   (is-constructor-of "GtkIconFileSelection")
+  (c-name "gtk_icon_file_selection_new")
   (return-type "GtkWidget*")
   (parameters
     '("const-gchar*" "title")
@@ -542,9 +530,11 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkiconlist.h
+(define-method ection_get_selection
+  (of-object "GtkIconFileSel")
+  (c-name "gtk_icon_file_selection_get_selection")
+  (return-type "const-gchar*")
+)
 
 (define-function gtk_icon_list_get_type
   (c-name "gtk_icon_list_get_type")
@@ -557,12 +547,12 @@
 )
 
 (define-function gtk_icon_list_new
-  (c-name "gtk_icon_list_new")
   (is-constructor-of "GtkIconList")
+  (c-name "gtk_icon_list_new")
   (return-type "GtkWidget*")
   (parameters
     '("guint" "icon_width")
-    '("guint" "mode")
+    '("GtkIconListMode" "mode")
   )
 )
 
@@ -572,7 +562,7 @@
   (return-type "none")
   (parameters
     '("guint" "icon_width")
-    '("guint" "mode")
+    '("GtkIconListMode" "mode")
   )
 )
 
@@ -581,14 +571,14 @@
   (c-name "gtk_icon_list_set_mode")
   (return-type "none")
   (parameters
-    '("guint" "mode")
+    '("GtkIconListMode" "mode")
   )
 )
 
 (define-method get_mode
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_get_mode")
-  (return-type "guint")
+  (return-type "GtkIconListMode")
 )
 
 (define-method set_editable
@@ -904,18 +894,14 @@
   (return-type "none")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkitementry.h
-
 (define-function gtk_item_entry_get_type
   (c-name "gtk_item_entry_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_item_entry_new
-  (c-name "gtk_item_entry_new")
   (is-constructor-of "GtkItemEntry")
+  (c-name "gtk_item_entry_new")
   (return-type "GtkWidget*")
 )
 
@@ -961,18 +947,14 @@
   (return-type "gboolean")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplot3d.h
-
 (define-function gtk_plot3d_get_type
   (c-name "gtk_plot3d_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot3d_new
-  (c-name "gtk_plot3d_new")
   (is-constructor-of "GtkPlot3D")
+  (c-name "gtk_plot3d_new")
   (return-type "GtkWidget*")
   (parameters
     '("GdkDrawable*" "drawable")
@@ -1391,6 +1373,25 @@
   (return-type "gint")
 )
 
+(define-method axis_set_scale
+  (of-object "GtkPlot3D")
+  (c-name "gtk_plot3d_axis_set_scale")
+  (return-type "none")
+  (parameters
+    '("GtkPlotAxisPos" "axis")
+    '("GtkPlotScale" "scale")
+  )
+)
+
+(define-method axis_get_scale
+  (of-object "GtkPlot3D")
+  (c-name "gtk_plot3d_axis_get_scale")
+  (return-type "GtkPlotScale")
+  (parameters
+    '("GtkPlotAxisPos" "axis")
+  )
+)
+
 (define-method major_grids_set_visible
   (of-object "GtkPlot3D")
   (c-name "gtk_plot3d_major_grids_set_visible")
@@ -1479,18 +1480,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotbar.h
-
 (define-function gtk_plot_bar_get_type
   (c-name "gtk_plot_bar_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_bar_new
-  (c-name "gtk_plot_bar_new")
   (is-constructor-of "GtkPlotBar")
+  (c-name "gtk_plot_bar_new")
   (return-type "GtkWidget*")
   (parameters
     '("GtkOrientation" "orientation")
@@ -1521,18 +1518,14 @@
   (return-type "gdouble")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotbox.h
-
 (define-function gtk_plot_box_get_type
   (c-name "gtk_plot_box_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_box_new
-  (c-name "gtk_plot_box_new")
   (is-constructor-of "GtkPlotBox")
+  (c-name "gtk_plot_box_new")
   (return-type "GtkWidget*")
   (parameters
     '("GtkOrientation" "orientation")
@@ -1548,9 +1541,16 @@
   )
 )
 
+(define-function gtk_plot_candle_get_type
+  (c-name "gtk_plot_candle_get_type")
+  (return-type "GtkType")
+)
 
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotcanvas.h
+(define-function gtk_plot_candle_new
+  (is-constructor-of "GtkPlotCandle")
+  (c-name "gtk_plot_candle_new")
+  (return-type "GtkWidget*")
+)
 
 (define-function gtk_plot_canvas_get_type
   (c-name "gtk_plot_canvas_get_type")
@@ -1563,8 +1563,8 @@
 )
 
 (define-function gtk_plot_canvas_new
-  (c-name "gtk_plot_canvas_new")
   (is-constructor-of "GtkPlotCanvas")
+  (c-name "gtk_plot_canvas_new")
   (return-type "GtkWidget*")
   (parameters
     '("gint" "width")
@@ -1725,6 +1725,21 @@
   )
 )
 
+(define-method set_transparent
+  (of-object "GtkPlotCanvas")
+  (c-name "gtk_plot_canvas_set_transparent")
+  (return-type "none")
+  (parameters
+    '("gboolean" "transparent")
+  )
+)
+
+(define-method transparent
+  (of-object "GtkPlotCanvas")
+  (c-name "gtk_plot_canvas_transparent")
+  (return-type "gboolean")
+)
+
 (define-method set_background
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_set_background")
@@ -1765,11 +1780,11 @@
   (parameters
     '("gdouble" "x")
     '("gdouble" "y")
-    '("const-gchar*" "font" (null-ok) (default "NULL"))
+    '("const-gchar*" "font" (default "NULL") (null-ok))
     '("gint" "height")
     '("gint" "angle")
-    '("const-GdkColor*" "fg" (null-ok) (default "NULL"))
-    '("const-GdkColor*" "bg" (null-ok) (default "NULL"))
+    '("const-GdkColor*" "fg" (default "NULL") (null-ok))
+    '("const-GdkColor*" "bg" (default "NULL") (null-ok))
     '("gboolean" "transparent")
     '("GtkJustification" "justification")
     '("const-gchar*" "text")
@@ -1887,8 +1902,8 @@
 )
 
 (define-function gtk_plot_canvas_child_new
-  (c-name "gtk_plot_canvas_child_new")
   (is-constructor-of "GtkPlotCanvasChild")
+  (c-name "gtk_plot_canvas_child_new")
   (return-type "GtkPlotCanvasChild*")
   (parameters
     '("GtkPlotCanvasType" "type")
@@ -1950,18 +1965,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotcsurface.h
-
 (define-function gtk_plot_csurface_get_type
   (c-name "gtk_plot_csurface_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_csurface_new
-  (c-name "gtk_plot_csurface_new")
   (is-constructor-of "GtkPlotCsurface")
+  (c-name "gtk_plot_csurface_new")
   (return-type "GtkWidget*")
 )
 
@@ -1997,43 +2008,68 @@
   (return-type "gboolean")
 )
 
-(define-method set_lines_only
+(define-method set_projection
   (of-object "GtkPlotCSurface")
-  (c-name "gtk_plot_csurface_set_lines_only")
+  (c-name "gtk_plot_csurface_set_projection")
   (return-type "none")
   (parameters
-    '("gboolean" "lines")
+    '("GtkPlotProjection" "proj")
   )
 )
 
-(define-method lines_only
+(define-method projection
   (of-object "GtkPlotCSurface")
-  (c-name "gtk_plot_csurface_lines_only")
-  (return-type "gboolean")
+  (c-name "gtk_plot_csurface_projection")
+  (return-type "GtkPlotProjection")
 )
 
-(define-method set_labels_visible
+(define-method set_levels_attributes
   (of-object "GtkPlotCSurface")
-  (c-name "gtk_plot_csurface_set_labels_visible")
+  (c-name "gtk_plot_csurface_set_levels_attributes")
   (return-type "none")
   (parameters
-    '("gboolean" "visible")
+    '("GtkPlotLineStyle" "style")
+    '("gfloat" "width")
+    '("const-GdkColor*" "color")
   )
 )
 
-(define-method labels_visible
+(define-method set_sublevels_attributes
   (of-object "GtkPlotCSurface")
-  (c-name "gtk_plot_csurface_labels_visible")
-  (return-type "gboolean")
+  (c-name "gtk_plot_csurface_set_sublevels_attributes")
+  (return-type "none")
+  (parameters
+    '("GtkPlotLineStyle" "style")
+    '("gfloat" "width")
+    '("const-GdkColor*" "color")
+  )
 )
 
+(define-method get_levels_attributes
+  (of-object "GtkPlotCSurface")
+  (c-name "gtk_plot_csurface_get_levels_attributes")
+  (return-type "none")
+  (parameters
+    '("GtkPlotLineStyle*" "style")
+    '("gfloat*" "width")
+    '("GdkColor*" "color")
+  )
+)
 
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotdata.h
+(define-method get_sublevels_attributes
+  (of-object "GtkPlotCSurface")
+  (c-name "gtk_plot_csurface_get_sublevels_attributes")
+  (return-type "none")
+  (parameters
+    '("GtkPlotLineStyle*" "style")
+    '("gfloat*" "width")
+    '("GdkColor*" "color")
+  )
+)
 
 (define-function gtk_plot_data_new
-  (c-name "gtk_plot_data_new")
   (is-constructor-of "GtkPlotData")
+  (c-name "gtk_plot_data_new")
   (return-type "GtkWidget*")
 )
 
@@ -2569,6 +2605,33 @@
   )
 )
 
+(define-method reset_gradient
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_reset_gradient")
+  (return-type "none")
+)
+
+(define-method reset_gradient_colors
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_reset_gradient_colors")
+  (return-type "none")
+)
+
+(define-method gradient_use_custom_colors
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_gradient_use_custom_colors")
+  (return-type "none")
+  (parameters
+    '("gboolean" "custom")
+  )
+)
+
+(define-method gradient_custom_colors
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_gradient_custom_colors")
+  (return-type "gboolean")
+)
+
 (define-method set_gradient_mask
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_set_gradient_mask")
@@ -2647,6 +2710,45 @@
   )
 )
 
+(define-method set_gradient_nth_color
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_set_gradient_nth_color")
+  (return-type "none")
+  (parameters
+    '("guint" "level")
+    '("GdkColor*" "color")
+  )
+)
+
+(define-method get_gradient_nth_color
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_get_gradient_nth_color")
+  (return-type "const-GdkColor*")
+  (parameters
+    '("guint" "level")
+  )
+)
+
+(define-method set_gradient_outer_colors
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_set_gradient_outer_colors")
+  (return-type "none")
+  (parameters
+    '("const-GdkColor*" "min")
+    '("const-GdkColor*" "max")
+  )
+)
+
+(define-method get_gradient_outer_colors
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_get_gradient_outer_colors")
+  (return-type "none")
+  (parameters
+    '("GdkColor*" "min")
+    '("GdkColor*" "max")
+  )
+)
+
 (define-method set_gradient
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_set_gradient")
@@ -2678,6 +2780,25 @@
   (parameters
     '("gdouble" "level")
     '("GdkColor*" "color")
+  )
+)
+
+(define-method gradient_set_style
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_gradient_set_style")
+  (return-type "none")
+  (parameters
+    '("GtkPlotLabelStyle" "style")
+    '("gint" "precision")
+  )
+)
+
+(define-method gradient_set_scale
+  (of-object "GtkPlotData")
+  (c-name "gtk_plot_data_gradient_set_scale")
+  (return-type "none")
+  (parameters
+    '("GtkPlotScale" "scale")
   )
 )
 
@@ -2741,18 +2862,14 @@
   (return-type "gboolean")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotdt.h
-
 (define-function gtk_plot_dt_get_type
   (c-name "gtk_plot_dt_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_dt_new
-  (c-name "gtk_plot_dt_new")
   (is-constructor-of "GtkPlotDt")
+  (c-name "gtk_plot_dt_new")
   (return-type "GtkObject*")
   (parameters
     '("gint" "num")
@@ -2807,40 +2924,14 @@
   (return-type "none")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotdtriangle.h
-
-(define-function triangulate
-  (c-name "triangulate")
-  (return-type "none")
-  (parameters
-    '("char" "*")
-    '("struct-triangulateio" "*")
-    '("struct-triangulateio" "*")
-    '("struct-triangulateio" "*")
-  )
-)
-
-(define-function triangulate
-  (c-name "triangulate")
-  (return-type "none")
-  (parameters
-  )
-)
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotflux.h
-
 (define-function gtk_plot_flux_get_type
   (c-name "gtk_plot_flux_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_flux_new
-  (c-name "gtk_plot_flux_new")
   (is-constructor-of "GtkPlotFlux")
+  (c-name "gtk_plot_flux_new")
   (return-type "GtkWidget*")
 )
 
@@ -2881,18 +2972,14 @@
   (return-type "gboolean")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotgdk.h
-
 (define-function gtk_plot_gdk_get_type
   (c-name "gtk_plot_gdk_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_gdk_new
-  (c-name "gtk_plot_gdk_new")
   (is-constructor-of "GtkPlotGdk")
+  (c-name "gtk_plot_gdk_new")
   (return-type "GtkObject*")
   (parameters
     '("GdkDrawable*" "drawable")
@@ -2917,18 +3004,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplot.h
-
 (define-function gtk_plot_get_type
   (c-name "gtk_plot_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_new
-  (c-name "gtk_plot_new")
   (is-constructor-of "GtkPlot")
+  (c-name "gtk_plot_new")
   (return-type "GtkWidget*")
   (parameters
     '("GdkDrawable*" "drawable" (default "NULL"))
@@ -3343,7 +3426,7 @@
 
 (define-method draw_line
   (of-object "GtkPlot")
-  (c-name "gtk_plot_draw_line")
+  (c-name "gtk_plot_draw_line_PY")
   (return-type "none")
   (parameters
     '("GtkPlotLine" "line")
@@ -3369,8 +3452,8 @@
 )
 
 (define-function gtk_plot_axis_new
-  (c-name "gtk_plot_axis_new")
   (is-constructor-of "GtkPlotAxis")
+  (c-name "gtk_plot_axis_new")
   (return-type "GtkObject*")
   (parameters
     '("GtkPlotOrientation" "orientation")
@@ -3568,6 +3651,30 @@
   )
 )
 
+(define-method axis_set_break
+  (of-object "GtkPlot")
+  (c-name "gtk_plot_axis_set_break")
+  (return-type "none")
+  (parameters
+    '("GtkPlotOrientation" "orient")
+    '("gdouble" "min")
+    '("gdouble" "max")
+    '("gdouble" "step_after")
+    '("gint" "nminor_after")
+    '("GtkPlotScale" "scale_after")
+    '("gdouble" "pos")
+  )
+)
+
+(define-method axis_remove_break
+  (of-object "GtkPlot")
+  (c-name "gtk_plot_axis_remove_break")
+  (return-type "none")
+  (parameters
+    '("GtkPlotOrientation" "orient")
+  )
+)
+
 (define-method axis_show_labels
   (of-object "GtkPlot")
   (c-name "gtk_plot_axis_show_labels")
@@ -3610,9 +3717,9 @@
   )
 )
 
-(define-method axis_set_labels_numbers
+(define-method axis_set_labels_style
   (of-object "GtkPlot")
-  (c-name "gtk_plot_axis_set_labels_numbers")
+  (c-name "gtk_plot_axis_set_labels_style")
   (return-type "none")
   (parameters
     '("GtkPlotAxisPos" "axis")
@@ -3876,16 +3983,16 @@
   (c-name "gtk_plot_legends_set_attributes")
   (return-type "none")
   (parameters
-    '("const-gchar*" "font" (null-ok) (default "NULL"))
+    '("const-gchar*" "font" (default "NULL") (null-ok))
     '("gint" "height")
-    '("const-GdkColor*" "foreground" (null-ok) (default "NULL"))
-    '("const-GdkColor*" "background" (null-ok) (default "NULL"))
+    '("const-GdkColor*" "foreground" (default "NULL") (null-ok))
+    '("const-GdkColor*" "background" (default "NULL") (null-ok))
   )
 )
 
 (define-method set_line_attributes
   (of-object "GtkPlot")
-  (c-name "gtk_plot_set_line_attributes")
+  (c-name "gtk_plot_set_line_attributes_PY")
   (return-type "none")
   (parameters
     '("GtkPlotLine" "line")
@@ -3919,18 +4026,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotpc.h
-
 (define-function gtk_plot_pc_get_type
   (c-name "gtk_plot_pc_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_pc_new
-  (c-name "gtk_plot_pc_new")
   (is-constructor-of "GtkPlotPc")
+  (c-name "gtk_plot_pc_new")
   (return-type "GtkObject*")
 )
 
@@ -4151,18 +4254,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotpixmap.h
-
 (define-function gtk_plot_pixmap_get_type
   (c-name "gtk_plot_pixmap_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_pixmap_new
-  (c-name "gtk_plot_pixmap_new")
   (is-constructor-of "GtkPlotPixmap")
+  (c-name "gtk_plot_pixmap_new")
   (return-type "GtkWidget*")
   (parameters
     '("GdkPixmap*" "pixmap")
@@ -4192,18 +4291,14 @@
   (return-type "GdkBitmap*")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotpolar.h
-
 (define-function gtk_plot_polar_get_type
   (c-name "gtk_plot_polar_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_polar_new
-  (c-name "gtk_plot_polar_new")
   (is-constructor-of "GtkPlotPolar")
+  (c-name "gtk_plot_polar_new")
   (return-type "GtkWidget*")
   (parameters
     '("GdkDrawable*" "drawable" (default "NULL") (null-ok))
@@ -4249,9 +4344,25 @@
   )
 )
 
+(define-method get_angle
+  (of-object "GtkPlotPolar")
+  (c-name "gtk_plot_polar_get_angle")
+  (return-type "gdouble")
+)
 
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotprint.h
+(define-method export_ps_with_size
+  (of-object "GtkPlot")
+  (c-name "gtk_plot_export_ps_with_size")
+  (return-type "gboolean")
+  (parameters
+    '("char*" "file_name")
+    '("GtkPlotPageOrientation" "orient")
+    '("gboolean" "epsflag")
+    '("GtkPlotUnits" "units")
+    '("gint" "width")
+    '("gint" "height")
+  )
+)
 
 (define-method export_ps
   (of-object "GtkPlotCanvas")
@@ -4259,9 +4370,9 @@
   (return-type "gboolean")
   (parameters
     '("char*" "file_name")
-    '("gint" "orient")
-    '("gint" "epsflag")
-    '("gint" "page_size")
+    '("GtkPlotPageOrientation" "orient")
+    '("gboolean" "epsflag")
+    '("GtkPlotPageSize" "page_size")
   )
 )
 
@@ -4270,19 +4381,14 @@
   (c-name "gtk_plot_canvas_export_ps_with_size")
   (return-type "gboolean")
   (parameters
-    '("gchar*" "file_name")
-    '("gint" "orient" (default "GTK_PLOT_PORTRAIT"))
-    '("gint" "eps" (default "FALSE"))
-    '("gint" "units" (default "GTK_PLOT_PSPOINTS"))
+    '("char*" "file_name")
+    '("GtkPlotPageOrientation" "orient" (default "GTK_PLOT_PORTRAIT"))
+    '("gboolean" "epsflag")
+    '("GtkPlotUnits" "units" (default "GTK_PLOT_PSPOINTS"))
     '("gint" "width" (default "GTK_PLOT_LETTER_W"))
     '("gint" "height" (default "GTK_PLOT_LETTER_H"))
-
   )
 )
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotps.h
 
 (define-function gtk_plot_ps_get_type
   (c-name "gtk_plot_ps_get_type")
@@ -4290,8 +4396,8 @@
 )
 
 (define-function gtk_plot_ps_new
-  (c-name "gtk_plot_ps_new")
   (is-constructor-of "GtkPlotPs")
+  (c-name "gtk_plot_ps_new")
   (return-type "GtkObject*")
   (parameters
     '("const-gchar*" "psname")
@@ -4369,18 +4475,14 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkplotsurface.h
-
 (define-function gtk_plot_surface_get_type
   (c-name "gtk_plot_surface_get_type")
   (return-type "GtkType")
 )
 
 (define-function gtk_plot_surface_new
-  (c-name "gtk_plot_surface_new")
   (is-constructor-of "GtkPlotSurface")
+  (c-name "gtk_plot_surface_new")
   (return-type "GtkWidget*")
 )
 
@@ -4493,6 +4595,15 @@
   (return-type "none")
   (parameters
     '("gboolean" "use_gradient")
+  )
+)
+
+(define-method use_amplitud
+  (of-object "GtkPlotSurface")
+  (c-name "gtk_plot_surface_use_amplitud")
+  (return-type "none")
+  (parameters
+    '("gboolean" "use_amplitud")
   )
 )
 
@@ -4709,22 +4820,14 @@
   (return-type "none")
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtkpsfont.h
-
 (define-function gtk_psfont_init
   (c-name "gtk_psfont_init")
   (return-type "gint")
-  (parameters
-  )
 )
 
 (define-function gtk_psfont_unref
   (c-name "gtk_psfont_unref")
   (return-type "none")
-  (parameters
-  )
 )
 
 (define-function gtk_psfont_get_by_name
@@ -4766,7 +4869,6 @@
 (define-method get_psfontname
   (of-object "GtkPSFont")
   (c-name "gtk_psfont_get_psfontname")
-  ;;FIXME (return-type "gchar*")
   (return-type "const-gchar*")
 )
 
@@ -4821,10 +4923,6 @@
   )
 )
 
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtksheet.h
-
 (define-function gtk_sheet_get_type
   (c-name "gtk_sheet_get_type")
   (return-type "GtkType")
@@ -4836,8 +4934,8 @@
 )
 
 (define-function gtk_sheet_new
-  (c-name "gtk_sheet_new")
   (is-constructor-of "GtkSheet")
+  (c-name "gtk_sheet_new")
   (return-type "GtkWidget*")
   (parameters
     '("guint" "rows")
@@ -5118,7 +5216,7 @@
 (define-method get_column_title
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_column_title")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
   (parameters
     '("gint" "column")
   )
@@ -5137,7 +5235,7 @@
 (define-method get_row_title
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_row_title")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
   (parameters
     '("gint" "row")
   )
@@ -5166,7 +5264,7 @@
 (define-method row_button_get_label
   (of-object "GtkSheet")
   (c-name "gtk_sheet_row_button_get_label")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
   (parameters
     '("gint" "row")
   )
@@ -5175,7 +5273,7 @@
 (define-method column_button_get_label
   (of-object "GtkSheet")
   (c-name "gtk_sheet_column_button_get_label")
-  (return-type "gchar*")
+  (return-type "const-gchar*")
   (parameters
     '("gint" "column")
   )
@@ -5806,6 +5904,28 @@
   )
 )
 
+(define-method attach_floating
+  (of-object "GtkSheet")
+  (c-name "gtk_sheet_attach_floating")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+    '("gint" "row")
+    '("gint" "col")
+  )
+)
+
+(define-method attach_default
+  (of-object "GtkSheet")
+  (c-name "gtk_sheet_attach_default")
+  (return-type "none")
+  (parameters
+    '("GtkWidget*" "widget")
+    '("gint" "row")
+    '("gint" "col")
+  )
+)
+
 (define-method attach
   (of-object "GtkSheet")
   (c-name "gtk_sheet_attach")
@@ -5814,8 +5934,10 @@
     '("GtkWidget*" "widget")
     '("gint" "row")
     '("gint" "col")
-    '("gfloat" "x_align")
-    '("gfloat" "y_align")
+    '("gint" "xoptions")
+    '("gint" "yoptions")
+    '("gint" "xpadding")
+    '("gint" "ypadding")
   )
 )
 
@@ -5848,14 +5970,8 @@
     '("GtkWidget*" "widget")
     '("gint" "row")
     '("gint" "col")
-    '("gfloat" "x_align")
-    '("gfloat" "y_align")
   )
 )
-
-
-
-;; From /usr/include/gtk-2.0/gtkextra/gtktogglecombo.h
 
 (define-function gtk_toggle_combo_get_type
   (c-name "gtk_toggle_combo_get_type")
@@ -5863,8 +5979,8 @@
 )
 
 (define-function gtk_toggle_combo_new
-  (c-name "gtk_toggle_combo_new")
   (is-constructor-of "GtkToggleCombo")
+  (c-name "gtk_toggle_combo_new")
   (return-type "GtkWidget*")
   (parameters
     '("gint" "nrows")
@@ -5913,5 +6029,4 @@
     '("gint*" "col")
   )
 )
-
 

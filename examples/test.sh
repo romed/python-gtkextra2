@@ -9,14 +9,13 @@ if test -z $1; then
 	exit 0
 fi
 
-export PYTHONPATH=../:../gtkextra/:$PYTHONPATH
+#export PYTHONPATH=../:../gtkextra/:$PYTHONPATH
+export PYTHONPATH=../:$PYTHONPATH
 
 if test -z $DEBUG; then
-    python2 -c "import ltihooks;del ltihooks;execfile('$1')"
+    python -c "execfile('$1')"
 else
-    python2 -c "\
-import ltihooks
-del ltihooks
+    python -c "\
 import os
 raw_input('Attach gdb on %d. Press return to begin \"$1\".' % os.getpid())
 del os

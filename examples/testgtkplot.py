@@ -8,8 +8,6 @@ class Application(gtk.Window):
     scale = 1.0
     
     def __init__(self):
-        self.hack = []
-        
         self.nlayers = 0
         self.buttons = []
         self.plots = []
@@ -67,13 +65,13 @@ class Application(gtk.Window):
         canvas.connect("move_item", self.move_item)
         canvas.connect("select_item", self.select_item)
 
-        canvas.put_text(0.40, 0.02, "Times-BoldItalic", 16, 0, None, None,
+        canvas.put_text(0.40, 0.02, "Helvetica", 16, 0, None, None,
                         gtk.TRUE, gtk.JUSTIFY_CENTER, "DnD titles, legends and plots")
-        canvas.put_text(0.40, 0.72, "Times-Roman", 16, 0, None, None,
+        canvas.put_text(0.40, 0.72, "Helvetica", 16, 0, None, None,
                         gtk.TRUE, gtk.JUSTIFY_CENTER,
                         "You can use \\ssubscripts\\b\\b\\b\\b\\b\\b\\b"\
                         "\\b\\b\\b\\N\\Ssuperscripts")
-        child = canvas.put_text(0.40, 0.755, "Times-Roman", 16, 0, None, None,
+        child = canvas.put_text(0.40, 0.755, "Helvetica", 16, 0, None, None,
                                 gtk.TRUE, gtk.JUSTIFY_CENTER,
                                 "Format text mixing \\Bbold \\N\\i, italics, "\
                                 "\\ggreek \\4\\N and \\+different fonts")
@@ -82,20 +80,21 @@ class Application(gtk.Window):
 
         self.show_all()
 
-        canvas.export_ps_with_size("plotdemo.ps", eps=gtk.TRUE)
+        canvas.export_ps_with_size("plotdemo.ps", epsflag=gtk.TRUE)
         print "Wrote plotdemo.ps"
 
 
     def move_item(self, canvas, item, new_x, new_y, *args):
+        print "move_item"
         if item.type == gtkextra.PLOT_CANVAS_DATA:
             print "MOVING DATA"
             (i, old_x, old_y) = canvas.get_active_point()
             print "Active point: %d -> %f %f" % (i, new_x, new_y)
             data = canvas.get_active_data()
-            x,y,dx,dy = data.get_points()
+            x, y, dx, dy = data.x, data.y, data.dx, data.dy
             x[i] = new_x
             y[i] = new_y
-            data.set_points(x=x, y=y)
+            data.set_points(x=x, y=y, dx=dx, dy=dy)
         return gtk.TRUE
 
     def select_item(self, canvas, event, item, *args):
@@ -185,8 +184,6 @@ class Application(gtk.Window):
         data.set_connector(gtkextra.PLOT_CONNECT_SPLINE)
         data.show_yerrbars()
         data.set_legend("Spline + EY")
-        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
-
 
         data = gtkextra.PlotData()
         plot.add_data(data)
@@ -197,7 +194,6 @@ class Application(gtk.Window):
         data.set_x_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, black)
         data.set_y_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, black)
         data.set_legend("Line + Symbol")
-        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
         
         #data = plot.add_function(self.function)
         #data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, blue)
@@ -223,7 +219,6 @@ class Application(gtk.Window):
         data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, blue)
         data.set_connector(gtkextra.PLOT_CONNECT_NONE)
         data.set_legend("V Bars")
-        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
 
     def function(self, x, *extra):
         try:

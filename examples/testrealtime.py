@@ -6,7 +6,6 @@ from random import randint
 class Application(gtk.Window):
 
     def __init__(self):
-        self.hack = [];
         gtk.Window.__init__(self)
         self.set_title("GtkPlot Real Time Demo")
         self.set_size_request(550, 600)
@@ -34,8 +33,8 @@ class Application(gtk.Window):
         plot.set_range(0.0, 20.0, 0.0, 1.0)
         plot.axis_set_ticks(gtkextra.PLOT_AXIS_X, 2.0, 1)
         plot.axis_set_ticks(gtkextra.PLOT_AXIS_Y, 0.1, 1)
-        plot.axis_set_labels_numbers(gtkextra.PLOT_AXIS_TOP, gtkextra.PLOT_LABEL_FLOAT, 0)
-        plot.axis_set_labels_numbers(gtkextra.PLOT_AXIS_BOTTOM, gtkextra.PLOT_LABEL_FLOAT, 0)
+        plot.axis_set_labels_style(gtkextra.PLOT_AXIS_TOP, gtkextra.PLOT_LABEL_FLOAT, 0)
+        plot.axis_set_labels_style(gtkextra.PLOT_AXIS_BOTTOM, gtkextra.PLOT_LABEL_FLOAT, 0)
         plot.axis_set_visible(gtkextra.PLOT_AXIS_TOP, gtk.TRUE)
         plot.axis_set_visible(gtkextra.PLOT_AXIS_RIGHT, gtk.TRUE)
         plot.grids_set_visible(gtk.TRUE, gtk.TRUE, gtk.TRUE, gtk.TRUE)
@@ -47,7 +46,9 @@ class Application(gtk.Window):
         plot.legends_move(0.60, 0.10)
         canvas.add_plot(plot, 0.15, 0.15)
 
-        canvas.put_text(0.45, 0.05, "Times-BoldItalic", 20, 0, None, None,
+        #canvas.put_text(0.45, 0.05, "Times-BoldItalic", 20, 0, None, None,
+        #canvas.put_text(0.45, 0.05, "Courier-Bold", 20, 0, None, None, #OK
+        canvas.put_text(0.45, 0.05, "Helvetica", 20, 0, None, None, #OK
                         gtk.TRUE, gtk.JUSTIFY_CENTER, "Real Time Demo")
 
         data = gtkextra.PlotData()
@@ -55,7 +56,6 @@ class Application(gtk.Window):
         data.set_legend("Random pulse")
         data.set_symbol(gtkextra.PLOT_SYMBOL_DIAMOND, gtkextra.PLOT_SYMBOL_OPAQUE, 10, 2, red, red)
         data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 1, red)
-        self.hack.append(data)
         
         plot.clip_data(gtk.TRUE)
 
@@ -66,8 +66,8 @@ class Application(gtk.Window):
     def update(self, canvas, plot, data, *args):
         y = randint(0, 9) / 10.0
 
-        px = data.get_x()
-        py = data.get_y()
+        px = data.x
+        py = data.y
         if px is None : px = []
         if py is None : py = []
         

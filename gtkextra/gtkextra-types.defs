@@ -130,6 +130,16 @@
   (in-module "Gtk")
   (parent "GtkWidget")
   (c-name "GtkPlotData")
+  (fields
+   '("gdouble*" "x")
+   '("gdouble*" "dx")
+   '("gdouble*" "y")
+   '("gdouble*" "dy")
+   '("gdouble*" "z")
+   '("gdouble*" "dz")
+   '("gdouble*" "a")
+   '("gdouble*" "da")
+  )
   (gtype-id "GTK_TYPE_PLOT_DATA")
 )
 
@@ -238,6 +248,17 @@
 ; Lot more to do from gtkplot.h. Also compare fields to accessor functions.
 ; Also gtkextra code needs all of those boxed fixed up with types and macros.
 
+(define-boxed GtkPlotLine
+  (in-module "Gtk")
+  (c-name "GtkPlotLine")
+  (gtype-id "GTK_TYPE_PLOT_LINE")
+  (fields
+    '("GtkPlotLineStyle" "line_style")
+    '("GdkCapStyle" "cap_style")
+    '("GdkJoinStyle" "join_style")
+  )
+)
+
 (define-boxed PlotText
   (in-module "Gtk")
   (c-name "GtkPlotText")
@@ -271,6 +292,17 @@
 )
 
 ;; Enumerations and flags ...
+
+(define-enum IconListMode
+  (in-module "Gtk")
+  (c-name "GtkIconListMode")
+  (gtype-id "GTK_TYPE_ICON_LIST_MODE")
+  (values
+    '("icon" "GTK_ICON_LIST_ICON")
+    '("text-right" "GTK_ICON_LIST_TEXT_RIGHT")
+    '("text-below" "GTK_ICON_LIST_TEXT_BELOW")
+  )
+)
 
 (define-enum PlotPlane
   (in-module "Gtk")
@@ -403,6 +435,17 @@
     '("top-right" "GTK_PLOT_CANVAS_TOP_RIGHT")
     '("bottom-left" "GTK_PLOT_CANVAS_BOTTOM_LEFT")
     '("bottom-right" "GTK_PLOT_CANVAS_BOTTOM_RIGHT")
+  )
+)
+
+(define-enum PlotProjection
+  (in-module "Gtk")
+  (c-name "GtkPlotProjection")
+  (gtype-id "GTK_TYPE_PLOT_PROJECTION")
+  (values
+    '("none" "GTK_PLOT_PROJECT_NONE")
+    '("empty" "GTK_PLOT_PROJECT_EMPTY")
+    '("full" "GTK_PLOT_PROJECT_FULL")
   )
 )
 
@@ -554,6 +597,41 @@
   )
 )
 
+(define-enum PlotPageSize
+  (in-module "Gtk")
+  (c-name "GtkPlotPageSize")
+  (gtype-id "GTK_TYPE_PLOT_PAGE_SIZE")
+  (values
+    '("letter" "GTK_PLOT_LETTER")
+    '("legal" "GTK_PLOT_LEGAL")
+    '("a4" "GTK_PLOT_A4")
+    '("executive" "GTK_PLOT_EXECUTIVE")
+    '("custom" "GTK_PLOT_CUSTOM")
+  )
+)
+
+(define-enum PlotPageOrientation
+  (in-module "Gtk")
+  (c-name "GtkPlotPageOrientation")
+  (gtype-id "GTK_TYPE_PLOT_PAGE_ORIENTATION")
+  (values
+    '("portrait" "GTK_PLOT_PORTRAIT")
+    '("landscape" "GTK_PLOT_LANDSCAPE")
+  )
+)
+
+(define-enum PlotUnits
+  (in-module "Gtk")
+  (c-name "GtkPlotUnits")
+  (gtype-id "GTK_TYPE_PLOT_UNITS")
+  (values
+    '("pspoints" "GTK_PLOT_PSPOINTS")
+    '("mm" "GTK_PLOT_MM")
+    '("cm" "GTK_PLOT_CM")
+    '("inches" "GTK_PLOT_INCHES")
+  )
+)
+
 (define-enum SheetAttrType
   (in-module "Gtk")
   (c-name "GtkSheetAttrType")
@@ -569,5 +647,3 @@
     '("is-visible" "GTK_SHEET_IS_VISIBLE")
   )
 )
-
-

@@ -19,4 +19,8 @@
   )
 )
 
+(define-function _set_data_from_pyobject_callback
+  (c-name "_set_data_from_pyobject_callback")
+)
+
 
