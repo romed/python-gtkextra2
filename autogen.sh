@@ -97,7 +97,7 @@ $ACLOCAL $ACLOCAL_FLAGS
 libtoolize --force
 
 $AUTOMAKE -a $am_opt
-$AUTOHEADER
+#$AUTOHEADER
 $AUTOCONF
 cd $ORIGDIR
 

@@ -1,50 +1,52 @@
 #!/usr/bin/env python
 
-from gtk import *
-from gtkextra import *
+import gtk
+import gtkextra
 from math import cos
 
-class Application(GtkWindow):
+class Application(gtk.Window):
 
     def __init__(self):
-        GtkWindow.__init__(self, title="GtkPlot3D Demo")
-        self.set_usize(550, 650)
-        self.connect("destroy", mainquit)
+        gtk.Window.__init__(self)
+        self.set_title=("GtkPlot3D Demo")
+        self.set_size_request(550, 650)
+        self.connect("destroy", self.quit)
 
-        scrollwin = GtkScrolledWindow()
-        scrollwin.set_policy(POLICY_ALWAYS, POLICY_ALWAYS)
+        scrollwin = gtk.ScrolledWindow()
+        scrollwin.set_policy(gtk.POLICY_ALWAYS, gtk.POLICY_ALWAYS)
         self.add(scrollwin)
 
-        canvas = GtkPlotCanvas(PLOT_LETTER_W, PLOT_LETTER_H)
-        canvas.plot_canvas_set_flags(PLOT_CANVAS_DND_FLAGS)
+        canvas = gtkextra.PlotCanvas(gtkextra.PLOT_LETTER_W, gtkextra.PLOT_LETTER_H)
+        canvas.plot_canvas_set_flags(gtkextra.PLOT_CANVAS_DND_FLAGS)
         scrollwin.add_with_viewport(canvas)
 
-        plot = GtkPlot3D(width=0.7, height=0.7)
-        plot.axis_set_minor_ticks(PLOT_AXIS_X, 1)
-        plot.axis_set_minor_ticks(PLOT_AXIS_Y, 1)
-        plot.axis_show_ticks(PLOT_SIDE_XY, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
-        plot.axis_show_ticks(PLOT_SIDE_XZ, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
-        plot.axis_show_ticks(PLOT_SIDE_YX, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
-        plot.axis_show_ticks(PLOT_SIDE_YZ, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
-        plot.axis_show_ticks(PLOT_SIDE_ZX, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
-        plot.axis_show_ticks(PLOT_SIDE_ZY, PLOT_TICKS_OUT, PLOT_TICKS_OUT)
+        plot = gtkextra.Plot3D(width=0.7, height=0.7)
+        plot.axis_set_minor_ticks(gtkextra.PLOT_AXIS_X, 1)
+        plot.axis_set_minor_ticks(gtkextra.PLOT_AXIS_Y, 1)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_XY, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_XZ, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_YX, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_YZ, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_ZX, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
+        plot.axis_show_ticks(gtkextra.PLOT_SIDE_ZY, gtkextra.PLOT_TICKS_OUT, gtkextra.PLOT_TICKS_OUT)
         canvas.add_plot(plot, 0.10, 0.06)
 
-        surface = GtkPlotSurface(self.function)
+        #surface = gtkextra.PlotSurface(self.function) #FIXME SOON
+        surface = gtkextra.PlotSurface()
         surface.set_xstep(0.025)
         surface.set_ystep(0.025)
         surface.set_legend("cos ((r-r\\s0\\N)\\S2\\N)")
         plot.add_data(surface)
 
-        button = GtkButton("Rotate X")
+        button = gtk.Button("Rotate X")
         button.connect("clicked", self.rotate_x, canvas, plot)
         canvas.put(button, 150, 0)
         
-        button = GtkButton("Rotate Y")
+        button = gtk.Button("Rotate Y")
         button.connect("clicked", self.rotate_y, canvas, plot)
         canvas.put(button, 230, 0)
         
-        button = GtkButton("Rotate Z")
+        button = gtk.Button("Rotate Z")
         button.connect("clicked", self.rotate_z, canvas, plot)
         canvas.put(button, 310, 0)
         
@@ -78,6 +80,9 @@ class Application(GtkWindow):
     def mainloop(self):
         mainloop()
 
-if __name__ == '__main__':		
+    def quit(self, *args):
+        gtk.main_quit()
+
+if __name__ == '__main__':
     app = Application()
-    app.mainloop()
+    gtk.main()

@@ -1,5 +1,7 @@
 pygtkextradir = $(pythondir)/gtkextra
-pygtkextra_PYTHON = __init__.py
+pygtkextra_PYTHON = \
+  __init__.py \
+  _config.py
 
 pygtkextraexecdir = $(pyexecdir)/gtkextra
 
@@ -17,7 +19,6 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) -Wall
 COMMONDEFS = 
 
 # gtkextra module
-#GTKEXTRA_LIBS=-lgtkextra-x11-1.1 #DOES NOT WORK
 pygtkextraexec_LTLIBRARIES = _gtkextramodule.la
 _gtkextramodule_la_CFLAGS = $(PYGTK_CFLAGS) $(GTK_CFLAGS) $(GTKEXTRA_CFLAGS)
 _gtkextramodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgtkextra
@@ -28,14 +29,13 @@ nodist__gtkextramodule_la_SOURCES = gtkextra.c
 
 CLEANFILES += gtkextra.c
 defs_DATA += gtkextra.defs gtkextra-types.defs
-EXTRA_DIST += gtkextra.override
+EXTRA_DIST += gtkextra.override mycodegen.py
 
-#CODEGEN=$(PYGTK_DEFSDIR)/../codegen/codegen.py
-CODEGEN=$(srcdir)/mycodegen.py
+CODEGEN=$(PYTHON) $(srcdir)/mycodegen.py
 
 .defs.c:
 	(cd $(srcdir) \
-	 && $(PYTHON) $(CODEGEN) \
+	 && $(CODEGEN) \
 	    --register $(PYGTK_DEFSDIR)/pango-types.defs \
 	    --register $(PYGTK_DEFSDIR)/gdk-types.defs \
 	    --register $(PYGTK_DEFSDIR)/gtk-types.defs \
@@ -44,3 +44,6 @@ CODEGEN=$(srcdir)/mycodegen.py
 	&& cp gen-$*.c $*.c \
 	&& rm -f gen-$*.c
 
+# a hack so that _config.py is not included in the final package.
+dist-hook:
+	-rm -f $(distdir)/_config.py

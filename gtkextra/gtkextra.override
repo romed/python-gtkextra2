@@ -691,4 +691,45 @@ _wrap__set_data_from_pyobject_callback(PyObject *dummy, PyObject *args)
     return Py_None;
 }
 %%
+override gtk_plot3d_new
+static int
+_wrap_gtk_plot3d_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist1[] = { "drawable", NULL };
+    static char *kwlist2[] = { "width", "height", "drawable", NULL };
+    PyGObject *drawable = NULL;
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, "|O!:GtkPlot3D.__init__",
+				    kwlist1, &PyGdkDrawable_Type, &drawable)) {
+	self->obj = (GObject *)gtk_plot3d_new(GDK_DRAWABLE(drawable->obj));
+    }
+    else {
+	double width, height;
+	PyErr_Clear();
+	/* It would have been nice if optional arguments were last in prototype. */
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "dd|O!:GtkPlot3D.__init__",
+					 kwlist2,
+					 &width, &height,
+					 &PyGdkDrawable_Type, &drawable))
+	    return -1;
+	if (drawable)
+	    self->obj = (GObject *)gtk_plot3d_new_with_size(GDK_DRAWABLE(drawable->obj),
+							    width, height);
+	else
+	    self->obj = (GObject *)gtk_plot3d_new_with_size(NULL,
+							    width, height);
+    }
+
+    if (!self->obj) {
+	PyErr_SetString(PyExc_RuntimeError, "could not create GtkPlot3D object");
+	return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+ignore
+plot3d_construct
+plot3d_construct_with_size
+%%
 ignore-glob *_get_type

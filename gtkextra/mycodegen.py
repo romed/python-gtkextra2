@@ -1,14 +1,15 @@
 #!/bin/env python
 
-# This is a temporary hack.
-import sys
-sys.path.append('/usr/share/pygtk/2.0/')
-del sys
+# Use the PyGtk2 codegen modules.
+# Allow new types to be registered.
 
-# Use the PyGtk2 codegen modules
+import _config
+import sys
+import os
+sys.path.append(os.path.join(_config.PYGTK_DEFSDIR, '../'))
+
 from codegen.argtypes import matcher
 import codegen.codegen
-
 
 matcher.register('GdkWChar', matcher.get('gint32'))
 

@@ -56,19 +56,18 @@ dnl gtk+
 AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
 
 dnl gtk+extra
-PKG_CHECK_MODULES(GTKEXTRA, gtkextra-2.0 >= gtkextra_required_version,,[AC_MSG_ERROR(maybe you want gtk+extra for gtk-gnome-1-2 branch)])
+PKG_CHECK_MODULES(GTKEXTRA, gtkextra-2.0 >= gtkextra_required_version)
 AC_SUBST(GTKEXTRA_CFLAGS)
 AC_SUBST(GTKEXTRA_LIBS)
 
 dnl pygtk
-PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= pygtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
+PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= pygtk_required_version)
 AC_SUBST(PYGTK_CFLAGS)
 
 AC_MSG_CHECKING(PYGTK_DEFSDIR)
 PYGTK_DEFSDIR=`$PKG_CONFIG --variable=defsdir "pygtk-2.0"`
-AC_MSG_RESULT($PYGTK_DEFSDIR)
 AC_SUBST(PYGTK_DEFSDIR)
-
+AC_MSG_RESULT($PYGTK_DEFSDIR)
 
 AC_ARG_ENABLE(numpy,
   AC_HELP_STRING([--disable-numpy], [Disable numeric python features]),,
@@ -109,6 +108,7 @@ AC_CONFIG_FILES(
   Makefile
   python-gtkextra.pc
   gtkextra/Makefile
+  gtkextra/_config.py
   python-gtkextra.spec)
 AC_OUTPUT
 
