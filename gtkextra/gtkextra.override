@@ -137,8 +137,10 @@ gtk_plot_text_copy (const GtkPlotText *text)
     g_return_val_if_fail (text != NULL, NULL);
     copy = g_new (GtkPlotText, 1);
     *copy = *text;
-    copy->font = g_strdup(text->font);
-    copy->text = g_strdup(text->text);
+    if(copy->font)
+	copy->font = g_strdup(text->font);
+    if(copy->text)
+	copy->text = g_strdup(text->text);
     return copy;
 }
 
@@ -643,6 +645,23 @@ override-attr GtkPlotCanvasChild.data
 static PyObject *
 _wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
 {
+    /* 
+       The GtkPlotCanvasType's are:
+
+       GTK_PLOT_CANVAS_NONE
+       GTK_PLOT_CANVAS_PLOT
+       GTK_PLOT_CANVAS_AXIS
+       GTK_PLOT_CANVAS_LEGENDS
+       GTK_PLOT_CANVAS_TITLE
+       GTK_PLOT_CANVAS_TEXT
+       GTK_PLOT_CANVAS_DATA
+       GTK_PLOT_CANVAS_LINE
+       GTK_PLOT_CANVAS_RECTANGLE
+       GTK_PLOT_CANVAS_ELLIPSE
+       GTK_PLOT_CANVAS_PIXMAP
+       GTK_PLOT_CANVAS_MARKER
+       GTK_PLOT_CANVAS_CUSTOM
+    */
     switch (pyg_boxed_get(self, GtkPlotCanvasChild)->type) {
     case GTK_PLOT_CANVAS_NONE:
 	Py_INCREF(Py_None);
@@ -654,9 +673,17 @@ _wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
 #else // Might also be ok when boxed correctly.
 	return pyg_boxed_new(GTK_TYPE_PLOT_TEXT, pyg_boxed_get(self, GtkPlotCanvasChild)->data, FALSE, FALSE);
 #endif
+
     case GTK_PLOT_CANVAS_PLOT:
-    case GTK_PLOT_CANVAS_DATA:
+    case GTK_PLOT_CANVAS_AXIS:
     case GTK_PLOT_CANVAS_LEGENDS:
+    case GTK_PLOT_CANVAS_TITLE:
+    case GTK_PLOT_CANVAS_DATA:
+    case GTK_PLOT_CANVAS_LINE:
+    case GTK_PLOT_CANVAS_RECTANGLE:
+    case GTK_PLOT_CANVAS_ELLIPSE:
+    case GTK_PLOT_CANVAS_PIXMAP:
+    case GTK_PLOT_CANVAS_MARKER:
     default:
 	return PyCObject_FromVoidPtr(pyg_pointer_get(self, GtkPlotCanvasChild)->data, NULL);
     }

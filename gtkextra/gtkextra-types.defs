@@ -343,7 +343,6 @@
 )
 
 (define-boxed PlotText
-;(define-pointer PlotText
   (in-module "Gtk")
   (c-name "GtkPlotText")
   (gtype-id "GTK_TYPE_PLOT_TEXT")
@@ -358,9 +357,9 @@
    '("gint" "border_width")
    '("gint" "shadow_width")
    '("gint" "border_space")
-   '("gchar*" "font")
+   '("gchar*" "font" (null-ok))
    '("gint" "height")
-   '("gchar*" "text")
+   '("gchar*" "text" (null-ok))
    '("GtkJustification" "justification")
   )
 )
@@ -369,10 +368,26 @@
   (in-module "Gtk")
   (c-name "GtkPlotCanvasChild")
   (gtype-id "GTK_TYPE_PLOT_CANVAS_CHILD")
+
   (fields
-    '("gint" "data")
-    '("gint" "type")
+    '("gdouble" "rx1")
+    '("gdouble" "rx2")
+    '("gdouble" "ry1")
+    '("gdouble" "ry2")
+    '("gint" "min_width")
+    '("gint" "min_height")
+    '("GdkRectangle" "allocation")
+    '("guint" "state")
+    '("GtkPlotCanvasType" "type")
+    '("GtkPlotCanvasFlag" "flags")
+    '("GtkPlotCanvasSelection" "selection")
+    '("GtkPlotCanvasSelectionMode" "mode")
+    '("gpointer" "data")
   )
+  ;(fields
+  ;  '("gint" "data")
+  ;  '("gint" "type")
+  ;)
 )
 
 (define-boxed IconListItem
