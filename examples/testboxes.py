@@ -60,7 +60,6 @@ class Application(gtk.Window):
         gtk.main_quit()
 
 if __name__ == '__main__':
-    raw_input("attach now")
     app = Application()
     gtk.main()
 

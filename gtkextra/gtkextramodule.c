@@ -7,6 +7,7 @@
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 #include <gtkextra/gtkextra.h>
+#include <gtkextra/gtkextratypebuiltins.h>
 
 void pygtkextra_register_classes(PyObject *d);
 void pygtkextra_add_constants(PyObject *module, const gchar *strip_prefix);

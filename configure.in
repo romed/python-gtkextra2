@@ -8,14 +8,12 @@ m4_define(python_gtkextra_micro_version, 8)
 m4_define(python_gtkextra_version, python_gtkextra_major_version.python_gtkextra_minor_version.python_gtkextra_micro_version)
 
 dnl versions of packages we require ...
-m4_define(glib_required_version,     2.0.0)
-m4_define(pango_required_version,    1.0.0)
-m4_define(atk_required_version,      1.0.0)
 m4_define(gtk_required_version,      2.0.0)
-m4_define(pygtk_required_version,    0.12.0)
+m4_define(pygtk_required_version,    1.99.8)
+m4_define(gtkextra_required_version,    1.1.0)
 
 AC_INIT(python-gtkextra, python_gtkextra_version,
-        [http://bugzilla.gnome.org/enter_bug.cgi?product=gnome-python&component=python-gtkextra])
+	[http://sourceforge.net/tracker/?group_id=35371])
 
 AC_DEFINE(PYTHON_GTKEXTRA_MAJOR_VERSION, python_gtkextra_major_version, [Python GtkExtra major version])
 AC_DEFINE(PYTHON_GTKEXTRA_MINOR_VERSION, python_gtkextra_minor_version, [Python GtkExtra minor version])
@@ -50,15 +48,6 @@ fi
 
 AM_CHECK_PYTHON_HEADERS(,[AC_MSG_ERROR(could not find Python headers)])
 
-#dnl glib
-#AM_PATH_GLIB_2_0(glib_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],gobject $extra_mods)
-
-#dnl atk
-#PKG_CHECK_MODULES(ATK, atk >= atk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
-#AC_SUBST(ATK_CFLAGS)
-#AC_SUBST(ATK_LIBS)
-
-#dnl pango
 #PKG_CHECK_MODULES(PANGO, pango >= pango_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])
 #AC_SUBST(PANGO_CFLAGS)
 #AC_SUBST(PANGO_LIBS)
@@ -67,20 +56,9 @@ dnl gtk+
 AM_PATH_GTK_2_0(gtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)],$extra_mods)
 
 dnl gtk+extra
-# HACK/TODO/FIXME: build and submit patch so gtk+extra uses pkg-config
-# Does not check version but should
-AC_PATH_PROG(GTKEXTRA_CONFIG, gtkextra-config, no)
-if test x$GTKEXTRA_CONFIG = xno ; then
-	AC_MSG_ERROR(could not find gtk+extra)
-fi
-#AC_MSG_CHECKING(GTKEXTRA_CFLAGS)
-#GTKEXTRA_CFLAGS=`$GTKEXTRA_CONFIG --cflags`
-#AC_MSG_RESULT($GTKEXTRA_CFLAGS)
-#AC_MSG_CHECKING(GTKEXTRA_LIBS)
-#GTKEXTRA_LIBS=`$GTKEXTRA_CONFIG --libs`
-#AC_MSG_RESULT($GTKEXTRA_LIBS)
-#AC_SUBST(GTKEXTRA_CFLAGS)
-#AC_SUBST(GTKEXTRA_LIBS)
+PKG_CHECK_MODULES(GTKEXTRA, gtkextra-2.0 >= gtkextra_required_version,,[AC_MSG_ERROR(maybe you want gtk+extra for gtk-gnome-1-2 branch)])
+AC_SUBST(GTKEXTRA_CFLAGS)
+AC_SUBST(GTKEXTRA_LIBS)
 
 dnl pygtk
 PKG_CHECK_MODULES(PYGTK, pygtk-2.0 >= pygtk_required_version,,[AC_MSG_ERROR(maybe you want the gtk-gnome-1-2 branch?)])

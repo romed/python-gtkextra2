@@ -12,6 +12,7 @@ FILE=gtkextra
 
 DIE=0
 
+
 test -z "$AUTOMAKE" && AUTOMAKE=automake
 test -z "$ACLOCAL" && ACLOCAL=aclocal
 test -z "$AUTOCONF" && AUTOCONF=autoconf
@@ -77,6 +78,9 @@ if test -z "$ACLOCAL_FLAGS"; then
 		fi
 	done
 fi
+
+# Delete all symbolic links to files rooted at "/"
+find $srcdir  -lname "/*" -exec rm {} \;
 
 #echo "Running gettextize...  Ignore non-fatal messages."
 # Hmm, we specify --force here, since otherwise things dont'

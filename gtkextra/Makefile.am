@@ -17,8 +17,7 @@ INCLUDES = -I$(top_srcdir) $(PYTHON_INCLUDES) -Wall
 COMMONDEFS = 
 
 # gtkextra module
-#GTKEXTRA_LIBS=-lgtkextra #DOES NOT WORK
-#GTKEXTRA_LIBS=-lgtkextra-x11 #DOES NOT WORK
+#GTKEXTRA_LIBS=-lgtkextra-x11-1.1 #DOES NOT WORK
 pygtkextraexec_LTLIBRARIES = gtkextramodule.la
 gtkextramodule_la_CFLAGS = $(PYGTK_CFLAGS) $(GTK_CFLAGS) $(GTKEXTRA_CFLAGS)
 gtkextramodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgtkextra

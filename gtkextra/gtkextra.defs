@@ -2759,9 +2759,9 @@
   )
 )
 
-(define-method set_quadtrilateral
+(define-method set_quadrilateral
   (of-object "GtkPlotDT")
-  (c-name "gtk_plot_dt_set_quadtrilateral")
+  (c-name "gtk_plot_dt_set_quadrilateral")
   (return-type "none")
   (parameters
     '("gboolean" "set")
@@ -5329,9 +5329,9 @@
   )
 )
 
-(define-method row_resizable
+(define-method rows_resizable
   (of-object "GtkSheet")
-  (c-name "gtk_sheet_row_resizable")
+  (c-name "gtk_sheet_rows_resizable")
   (return-type "gboolean")
 )
 

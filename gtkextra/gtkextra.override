@@ -27,6 +27,7 @@ headers
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 #include <gtkextra/gtkextra.h>
+#include <gtkextra/gtkextratypebuiltins.h>
 
 /* ----------------------------------------------------------------------
  Fixup boo-boo's or ommissions.  Probably should be fixed in gtkextra.
@@ -127,22 +128,6 @@ _wrap_##_f(PyGObject *self) \
 \
     return py_ret; \
 }
-
-#define _GET_ONE(_x) static PyObject * \
-_wrap_gtk_plot_data_get_##_x(PyGObject *self) \
-{ \
-    PyObject *py_ret; \
-    gdouble *points; \
-    gint num_points; \
-\
-    points = gtk_plot_data_get_##_x(GTK_PLOT_DATA(self->obj), &num_points); \
-\
-    if( !(py_ret = pygtkextra_vec2py(num_points, points))) \
-	return NULL; \
-\
-    return py_ret; \
-}
-
 
 /* ----------------------------------------------------------------------
    Functions for converting Python sequence like objects To/From C arrays.
@@ -427,31 +412,31 @@ _wrap_gtk_plot_data_get_points(PyGObject *self)
 
 %%
 override gtk_plot_data_get_x noargs
-_GET_ONE(x)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_x, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_y noargs
-_GET_ONE(y)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_y, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_z noargs
-_GET_ONE(z)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_z, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_a noargs
-_GET_ONE(a)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_a, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_dx noargs
-_GET_ONE(dx)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_dx, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_dy noargs
-_GET_ONE(dy)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_dy, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_dz noargs
-_GET_ONE(dz)
+_GET_ONE_DOUBLE_VEC(gtk_plot_data_get_dz, GTK_PLOT_DATA)
 
 %%
 override gtk_plot_data_get_da noargs
@@ -487,6 +472,3 @@ ignore-glob *_get_type
 %%
 ignore
   triangulate
-  gtk_sheet_row_resizable
-  gtkextra_check_version
-  gtk_plot_dt_set_quadtrilateral
