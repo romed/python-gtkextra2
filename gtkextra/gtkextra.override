@@ -164,6 +164,19 @@ gtk_plot_line_get_type (void)
   return our_type;
 }
 
+static GtkSheetRange*
+gtk_sheet_range_new ( gint row0, gint col0, gint rowi, gint coli)
+{
+    GtkSheetRange *p = g_new (GtkSheetRange, 1);
+    if (p) {
+	p->row0 = row0;
+	p->col0 = col0;
+	p->rowi = rowi;
+	p->coli = coli;
+    }
+    return p;
+}
+
 static void
 gtk_plot_draw_text_PY (GtkPlot *plot, GtkPlotText *text)
 {
@@ -959,6 +972,121 @@ _wrap_gtk_plot_surface_new(PyGObject *self, PyObject *args, PyObject *kwargs)
     }
     if (!self->obj) {
         PyErr_SetString(PyExc_RuntimeError, "could not create GtkPlotSurface object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_plot_csurface_new kwargs
+static int
+_wrap_gtk_plot_csurface_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "function", NULL };
+    PyObject *function = NULL;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|O:GtkPlotCSurface.__init__", kwlist, &function))
+        return -1;
+
+    if (!function)
+	self->obj = (GObject *)gtk_plot_csurface_new();
+    else {
+	if (!PyCallable_Check(function)) {
+	    PyErr_SetString(PyExc_RuntimeError, "function argument must be callable");
+	    return -1;
+	}
+	self->obj = (GObject *)gtk_plot_csurface_new_function(pygtkextra_plot_function_3D);
+	if(self->obj)
+	    pygtkextra_set_data(self, function_key, function);
+    }
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkPlotCSurface object");
+        return -1;
+    }
+    pygobject_register_wrapper((PyObject *)self);
+    return 0;
+}
+%%
+override gtk_plot_csurface_construct_function kwargs
+static PyObject *
+_wrap_gtk_plot_csurface_construct_function(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "function", NULL };
+    PyObject *function;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkPlotCSurface.construct_function", kwlist, &function))
+        return NULL;
+
+    if (!PyCallable_Check(function)) {
+	PyErr_SetString(PyExc_RuntimeError, "function argument must be callable");
+	return NULL;
+    }
+
+    gtk_plot_csurface_construct_function(GTK_PLOT_CSURFACE(self->obj), pygtkextra_plot_function_3D);
+    pygtkextra_set_data(self, function_key, function);
+    
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+%%
+override gtk_color_combo_new kwargs
+static int
+_wrap_gtk_color_combo_new(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist1[] = { NULL };
+    static char *kwlist2[] = { "nrows", "ncols", "colors", NULL };
+
+    if (PyArg_ParseTupleAndKeywords(args, kwargs, ":GtkColorCombo.__init__", kwlist1)) {
+	self->obj = (GObject *)gtk_color_combo_new();
+    }
+    else {
+	int nrows, ncols;
+	int len, i;
+	PyObject *py_colors;
+	GdkColor **colors = NULL;
+
+	PyErr_Clear();
+	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "iiO:GtkColorCombo.__init__", kwlist2,
+					 &nrows, &ncols, &py_colors))
+	    return -1;
+
+	if (!PySequence_Check(py_colors)) {
+	    PyErr_SetString(PyExc_TypeError, "colors must be a sequence of GdkColor");
+	    return -1;
+	}
+
+	len = PySequence_Length(py_colors);
+	if ( len != nrows * ncols) {
+	    PyErr_SetString(PyExc_TypeError, "colors length is not nrows * ncols ");
+	    return -1;
+	}
+	
+	colors = (GdkColor**) g_new(GdkColor*, len);
+	if (!colors) {
+	    PyErr_SetString(PyExc_RuntimeError, "g_new failed");
+	    return -1;
+	}
+
+	for (i = 0; i < len; ++i) {
+	    PyObject *py_color;
+
+	    py_color = PySequence_GetItem(py_colors, i);
+	    if (pyg_boxed_check(py_color, GDK_TYPE_COLOR)) {
+		colors[i] = (GdkColor*) pyg_boxed_get(py_color, GdkColor);
+		Py_DECREF(py_color);
+	    }
+	    else {
+		PyErr_SetString(PyExc_TypeError, "colors items should be a GdkColor");
+		g_free(colors);
+		Py_DECREF(py_color);
+		return -1;
+	    }
+	}
+	self->obj = (GObject *)gtk_color_combo_new_with_values(nrows, ncols, *colors);
+	g_free(colors);
+    }
+    if (!self->obj) {
+        PyErr_SetString(PyExc_RuntimeError, "could not create GtkColorCombo object");
         return -1;
     }
     pygobject_register_wrapper((PyObject *)self);

@@ -5,11 +5,9 @@ import gtk, gtkextra
 class Application(gtk.Window):
 
     def __init__(self):
-        self.hack = []
         gtk.Window.__init__(self)
         self.set_title("GtkPlotPolar Demo")
         self.set_size_request(500, 320)
-        self.connect("destroy", self.quit)
 
         colormap = self.get_colormap()
         red = colormap.alloc_color("red")
@@ -35,13 +33,10 @@ class Application(gtk.Window):
         data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 1, red)
         data.set_legend("Example")
         plot.add_data(data)
-        self.hack.append(data)
 
         self.show_all()
 
-    def quit(self, *args):
-        gtk.main_quit()
-
 if __name__ == '__main__':
     app = Application()
+    app.connect("destroy", lambda win : gtk.main_quit())
     gtk.main()

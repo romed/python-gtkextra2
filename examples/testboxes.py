@@ -5,11 +5,9 @@ import gtk, gtkextra
 class Application(gtk.Window):
 
     def __init__(self):
-        self.hack = []
         gtk.Window.__init__(self)
         self.set_title("GtkPlotBox Demo")
         self.set_size_request(550, 360)
-        self.connect("destroy", self.quit)
 
         scrollwin = gtk.ScrolledWindow()
         scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -54,12 +52,9 @@ class Application(gtk.Window):
                         yellow, red)
         data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, red)
         data.set_legend("Boxes")
-        self.hack.append(data) #FIXME
-        
-    def quit(self, *args):
-        gtk.main_quit()
 
 if __name__ == '__main__':
     app = Application()
+    app.connect("destroy", lambda win : gtk.main_quit())
     gtk.main()
 

@@ -5,11 +5,9 @@ import gtk, gtkextra
 class Application(gtk.Window):
     
     def __init__(self):
-        self.hack = []
         gtk.Window.__init__(self)
         self.set_title("GtkPlotFlux Demo")
         self.set_size_request(550, 340)
-        self.connect("destroy", self.quit)
 
         colormap = self.get_colormap()
         red = colormap.alloc_color("red")
@@ -49,7 +47,6 @@ class Application(gtk.Window):
         data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, red)
         data.set_legend("Flux")
         plot.add_data(data)
-        self.hack.append(data)
 
         self.show_all()
 
@@ -60,9 +57,7 @@ class Application(gtk.Window):
                 print "Active point:", tuple[0], "->", tuple[1], tuple[2]
         return gtk.TRUE
 
-    def quit(self, *args):
-        gtk.main_quit()
-
 if __name__ == '__main__':
     app = Application()
+    app.connect("destroy", lambda win : gtk.main_quit())
     gtk.main()

@@ -4,6 +4,9 @@
 ;; Then merge old defs with new defs with mergedefs.py for fields and default values.
 ;; python ~/gnome-cvs/gnome-python/pygtk/codegen/mergedefs.py gtkextra_.defs gtkextra.defs > gtkextra_merged.defs
 ;; Then redo include's.
+;;
+;; Another thing is null-ok's on return of points. 
+;; I have added that to many functions, but may have missed some that should have it.
 
 (include "gtkextra-types.defs")
 (include "gtkextra-addons.defs")
@@ -177,7 +180,7 @@
 
 (define-function gtkextra_check_version
   (c-name "gtkextra_check_version")
-  (return-type "gchar*")
+  (return-type "gchar*" (null-ok))
   (parameters
     '("guint" "required_major")
     '("guint" "required_minor")
@@ -332,7 +335,7 @@
   (parameters
     '("guint" "icon_width")
     '("gint" "mode")
-    '("const-gchar*" "path")
+    '("const-gchar*" "path" (default "NULL") (null-ok))
   )
 )
 
@@ -352,7 +355,7 @@
   (c-name "gtk_file_list_set_filter")
   (return-type "none")
   (parameters
-    '("const-gchar*" "filter")
+    '("const-gchar*" "filter" (null-ok))
   )
 )
 
@@ -361,20 +364,20 @@
   (c-name "gtk_file_list_open_dir")
   (return-type "gboolean")
   (parameters
-    '("const-gchar*" "path")
+    '("const-gchar*" "path" (null-ok))
   )
 )
 
 (define-method get_path
   (of-object "GtkFileList")
   (c-name "gtk_file_list_get_path")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
 )
 
 (define-method get_filename
   (of-object "GtkFileList")
   (c-name "gtk_file_list_get_filename")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
 )
 
 (define-method get_filetype
@@ -456,19 +459,19 @@
 (define-method get_psfont
   (of-object "GtkFontCombo")
   (c-name "gtk_font_combo_get_psfont")
-  (return-type "GtkPSFont*")
+  (return-type "GtkPSFont*" (null-ok))
 )
 
 (define-method get_font_description
   (of-object "GtkFontCombo")
   (c-name "gtk_font_combo_get_font_description")
-  (return-type "PangoFontDescription*")
+  (return-type "PangoFontDescription*" (null-ok))
 )
 
 (define-method get_gdkfont
   (of-object "GtkFontCombo")
   (c-name "gtk_font_combo_get_gdkfont")
-  (return-type "GdkFont*")
+  (return-type "GdkFont*" (null-ok))
 )
 
 (define-function gtk_icon_file_selection_get_type
@@ -485,8 +488,8 @@
   )
 )
 
-(define-method ection_construct
-  (of-object "GtkIconFileSel")
+(define-method construct
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_construct")
   (return-type "none")
   (parameters
@@ -494,8 +497,8 @@
   )
 )
 
-(define-method ection_show_tree
-  (of-object "GtkIconFileSel")
+(define-method show_tree
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_show_tree")
   (return-type "none")
   (parameters
@@ -503,8 +506,8 @@
   )
 )
 
-(define-method ection_open_dir
-  (of-object "GtkIconFileSel")
+(define-method open_dir
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_open_dir")
   (return-type "gint")
   (parameters
@@ -512,8 +515,8 @@
   )
 )
 
-(define-method ection_show_hidden
-  (of-object "GtkIconFileSel")
+(define-method show_hidden
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_show_hidden")
   (return-type "none")
   (parameters
@@ -521,8 +524,8 @@
   )
 )
 
-(define-method ection_set_filter
-  (of-object "GtkIconFileSel")
+(define-method set_filter
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_set_filter")
   (return-type "none")
   (parameters
@@ -530,10 +533,10 @@
   )
 )
 
-(define-method ection_get_selection
-  (of-object "GtkIconFileSel")
+(define-method get_selection
+  (of-object "GtkIconFileSelection")
   (c-name "gtk_icon_file_selection_get_selection")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
 )
 
 (define-function gtk_icon_list_get_type
@@ -695,19 +698,19 @@
 (define-method add_from_pixmap
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_add_from_pixmap")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("GdkPixmap*" "pixmap")
-    '("GdkBitmap*" "bitmap")
-    '("const-gchar*" "label")
-    '("gpointer" "link")
+    '("GdkBitmap*" "bitmap" (default "NULL") (null-ok))
+    '("const-gchar*" "label" (default "NULL") (null-ok))
+    '("gpointer" "link" (default "NULL") (null-ok))
   )
 )
 
 (define-method add_from_data
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_add_from_data")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("gchar**" "data")
     '("const-gchar*" "label" (default "NULL") (null-ok))
@@ -718,18 +721,18 @@
 (define-method add
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_add")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("const-gchar*" "pixmap_file")
-    '("const-gchar*" "label")
-    '("gpointer" "link")
+    '("const-gchar*" "label" (default "NULL") (null-ok))
+    '("gpointer" "link" (default "NULL") (null-ok))
   )
 )
 
 (define-method get_nth
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_get_nth")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("guint" "n")
   )
@@ -794,7 +797,7 @@
 
 (define-function gtk_icon_list_get_link
   (c-name "gtk_icon_list_get_link")
-  (return-type "gpointer")
+  (return-type "gpointer" (null-ok))
   (parameters
     '("GtkIconListItem*" "item")
   )
@@ -803,7 +806,7 @@
 (define-method get_icon_from_link
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_get_icon_from_link")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("gpointer" "data")
   )
@@ -812,7 +815,7 @@
 (define-method get_icon_at
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_get_icon_at")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
   (parameters
     '("gint" "x")
     '("gint" "y")
@@ -822,12 +825,12 @@
 (define-method get_active_icon
   (of-object "GtkIconList")
   (c-name "gtk_icon_list_get_active_icon")
-  (return-type "GtkIconListItem*")
+  (return-type "GtkIconListItem*" (null-ok))
 )
 
 (define-function gtk_icon_list_get_entry
   (c-name "gtk_icon_list_get_entry")
-  (return-type "GtkWidget*")
+  (return-type "GtkWidget*" (null-ok))
   (parameters
     '("GtkIconListItem*" "item")
   )
@@ -835,7 +838,7 @@
 
 (define-function gtk_icon_list_get_pixmap
   (c-name "gtk_icon_list_get_pixmap")
-  (return-type "GtkWidget*")
+  (return-type "GtkWidget*" (null-ok))
   (parameters
     '("GtkIconListItem*" "item")
   )
@@ -1233,7 +1236,7 @@
 (define-method get_axis
   (of-object "GtkPlot3D")
   (c-name "gtk_plot3d_get_axis")
-  (return-type "GtkPlotAxis*")
+  (return-type "GtkPlotAxis*" (null-ok))
   (parameters
     '("GtkPlotOrientation" "orientation")
   )
@@ -1242,7 +1245,7 @@
 (define-method get_side
   (of-object "GtkPlot3D")
   (c-name "gtk_plot3d_get_side")
-  (return-type "GtkPlotAxis*")
+  (return-type "GtkPlotAxis*" (null-ok))
   (parameters
     '("GtkPlotSide" "side")
   )
@@ -1681,13 +1684,13 @@
 (define-method get_active_plot
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_get_active_plot")
-  (return-type "GtkPlot*")
+  (return-type "GtkPlot*" (null-ok))
 )
 
 (define-method get_active_data
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_get_active_data")
-  (return-type "GtkPlotData*")
+  (return-type "GtkPlotData*" (null-ok))
 )
 
 (define-method get_active_point
@@ -1703,7 +1706,7 @@
 (define-method get_active_item
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_get_active_item")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
 )
 
 (define-method set_size
@@ -1776,7 +1779,7 @@
 (define-method put_text
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_text")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
   (parameters
     '("gdouble" "x")
     '("gdouble" "y")
@@ -1803,7 +1806,7 @@
 (define-method put_line
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_line")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
   (parameters
     '("gdouble" "x1")
     '("gdouble" "y1")
@@ -1819,7 +1822,7 @@
 (define-method put_rectangle
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_rectangle")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
   (parameters
     '("gdouble" "x1")
     '("gdouble" "y1")
@@ -1837,7 +1840,7 @@
 (define-method put_ellipse
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_ellipse")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
   (parameters
     '("gdouble" "x1")
     '("gdouble" "y1")
@@ -1854,7 +1857,7 @@
 (define-method put_pixmap
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_pixmap")
-  (return-type "GtkPlotCanvasChild*")
+  (return-type "GtkPlotCanvasChild*" (null-ok))
   (parameters
     '("GdkPixmap*" "pixmap")
     '("gdouble" "x1")
@@ -1971,7 +1974,7 @@
 )
 
 (define-function gtk_plot_csurface_new
-  (is-constructor-of "GtkPlotCsurface")
+  (is-constructor-of "GtkPlotCSurface")
   (c-name "gtk_plot_csurface_new")
   (return-type "GtkWidget*")
 )
@@ -2280,7 +2283,7 @@
 (define-method get_x
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_x")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2289,7 +2292,7 @@
 (define-method get_y
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_y")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2298,7 +2301,7 @@
 (define-method get_z
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_z")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2307,7 +2310,7 @@
 (define-method get_a
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_a")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2316,7 +2319,7 @@
 (define-method get_dx
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_dx")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2325,7 +2328,7 @@
 (define-method get_dy
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_dy")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2334,7 +2337,7 @@
 (define-method get_dz
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_dz")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2343,7 +2346,7 @@
 (define-method get_da
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_da")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "num_points")
   )
@@ -2358,7 +2361,7 @@
 (define-method get_labels
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_labels")
-  (return-type "gchar**")
+  (return-type "gchar**" (null-ok))
   (parameters
     '("gboolean*" "show_labels")
   )
@@ -2411,7 +2414,7 @@
     '("gint" "size")
     '("gfloat" "line_width")
     '("const-GdkColor*" "color")
-    '("const-GdkColor*" "border_color")
+    '("const-GdkColor*" "border_color" (default "NULL") (null-ok))
   )
 )
 
@@ -2723,7 +2726,7 @@
 (define-method get_gradient_nth_color
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_gradient_nth_color")
-  (return-type "const-GdkColor*")
+  (return-type "const-GdkColor*" (null-ok))
   (parameters
     '("guint" "level")
   )
@@ -2757,7 +2760,7 @@
     '("gdouble" "min")
     '("gdouble" "max")
     '("gint" "nlevels")
-    '("gint" "nsublevels")
+    '("gint" "nsublevels" (default "0"))
   )
 )
 
@@ -2814,7 +2817,7 @@
 (define-method get_link
   (of-object "GtkPlotData")
   (c-name "gtk_plot_data_get_link")
-  (return-type "gpointer")
+  (return-type "gpointer" (null-ok))
 )
 
 (define-method remove_link
@@ -2906,7 +2909,7 @@
 (define-method get_node
   (of-object "GtkPlotDT")
   (c-name "gtk_plot_dt_get_node")
-  (return-type "GtkPlotDTnode*")
+  (return-type "GtkPlotDTnode*" (null-ok))
   (parameters
     '("gint" "idx")
   )
@@ -3060,7 +3063,7 @@
 (define-method get_drawable
   (of-object "GtkPlot")
   (c-name "gtk_plot_get_drawable")
-  (return-type "GdkDrawable*")
+  (return-type "GdkDrawable*" (null-ok))
 )
 
 (define-method set_pc
@@ -3142,7 +3145,7 @@
   (c-name "gtk_plot_refresh")
   (return-type "none")
   (parameters
-    '("GdkRectangle*" "area")
+    '("GdkRectangle*" "area" (default "NULL") (null-ok))
   )
 )
 
@@ -3472,7 +3475,7 @@
 (define-method get_axis
   (of-object "GtkPlot")
   (c-name "gtk_plot_get_axis")
-  (return-type "GtkPlotAxis*")
+  (return-type "GtkPlotAxis*" (null-ok))
   (parameters
     '("GtkPlotAxisPos" "axis")
   )
@@ -3780,7 +3783,7 @@
 (define-method axis_get_labels_suffix
   (of-object "GtkPlot")
   (c-name "gtk_plot_axis_get_labels_suffix")
-  (return-type "gchar*")
+  (return-type "gchar*" (null-ok))
   (parameters
     '("GtkPlotAxisPos" "axis")
   )
@@ -3789,7 +3792,7 @@
 (define-method axis_get_labels_prefix
   (of-object "GtkPlot")
   (c-name "gtk_plot_axis_get_labels_prefix")
-  (return-type "gchar*")
+  (return-type "gchar*" (null-ok))
   (parameters
     '("GtkPlotAxisPos" "axis")
   )
@@ -4282,13 +4285,13 @@
 (define-method get_pixmap
   (of-object "GtkPlotPixmap")
   (c-name "gtk_plot_pixmap_get_pixmap")
-  (return-type "GdkPixmap*")
+  (return-type "GdkPixmap*" (null-ok))
 )
 
 (define-method get_mask
   (of-object "GtkPlotPixmap")
   (c-name "gtk_plot_pixmap_get_mask")
-  (return-type "GdkBitmap*")
+  (return-type "GdkBitmap*" (null-ok))
 )
 
 (define-function gtk_plot_polar_get_type
@@ -4356,11 +4359,11 @@
   (return-type "gboolean")
   (parameters
     '("char*" "file_name")
-    '("GtkPlotPageOrientation" "orient")
-    '("gboolean" "epsflag")
-    '("GtkPlotUnits" "units")
-    '("gint" "width")
-    '("gint" "height")
+    '("GtkPlotPageOrientation" "orient" (default "GTK_PLOT_PORTRAIT"))
+    '("gboolean" "epsflag" (default "FALSE"))
+    '("GtkPlotUnits" "units" (default "GTK_PLOT_PSPOINTS"))
+    '("gint" "width" (default "GTK_PLOT_LETTER_W"))
+    '("gint" "height" (default "GTK_PLOT_LETTER_H"))
   )
 )
 
@@ -4370,9 +4373,9 @@
   (return-type "gboolean")
   (parameters
     '("char*" "file_name")
-    '("GtkPlotPageOrientation" "orient")
-    '("gboolean" "epsflag")
-    '("GtkPlotPageSize" "page_size")
+    '("GtkPlotPageOrientation" "orient" (default "GTK_PLOT_PORTRAIT"))
+    '("gboolean" "epsflag" (default "FALSE"))
+    '("GtkPlotPageSize" "page_size" (default "GTK_PLOT_LETTER"))
   )
 )
 
@@ -4705,7 +4708,7 @@
 (define-method get_x
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_x")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "nx")
   )
@@ -4714,7 +4717,7 @@
 (define-method get_y
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_y")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "ny")
   )
@@ -4723,7 +4726,7 @@
 (define-method get_z
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_z")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
   (parameters
     '("gint*" "nx")
     '("gint*" "ny")
@@ -4733,19 +4736,19 @@
 (define-method get_dx
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_dx")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
 )
 
 (define-method get_dy
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_dy")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
 )
 
 (define-method get_dz
   (of-object "GtkPlotSurface")
   (c-name "gtk_plot_surface_get_dz")
-  (return-type "gdouble*")
+  (return-type "gdouble*" (null-ok))
 )
 
 (define-method set_nx
@@ -4832,7 +4835,7 @@
 
 (define-function gtk_psfont_get_by_name
   (c-name "gtk_psfont_get_by_name")
-  (return-type "GtkPSFont*")
+  (return-type "GtkPSFont*" (null-ok))
   (parameters
     '("const-gchar*" "name")
   )
@@ -4840,7 +4843,7 @@
 
 (define-function gtk_psfont_get_by_family
   (c-name "gtk_psfont_get_by_family")
-  (return-type "GtkPSFont*")
+  (return-type "GtkPSFont*" (null-ok))
   (parameters
     '("const-gchar*" "family")
     '("gboolean" "italic")
@@ -4851,7 +4854,7 @@
 (define-method get_gdkfont
   (of-object "GtkPSFont")
   (c-name "gtk_psfont_get_gdkfont")
-  (return-type "GdkFont*")
+  (return-type "GdkFont*" (null-ok))
   (parameters
     '("gint" "height")
   )
@@ -4860,7 +4863,7 @@
 (define-method get_font_description
   (of-object "GtkPSFont")
   (c-name "gtk_psfont_get_font_description")
-  (return-type "PangoFontDescription*")
+  (return-type "PangoFontDescription*" (null-ok))
   (parameters
     '("gint" "height")
   )
@@ -4869,7 +4872,7 @@
 (define-method get_psfontname
   (of-object "GtkPSFont")
   (c-name "gtk_psfont_get_psfontname")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
 )
 
 (define-function gtk_psfont_add_font
@@ -5029,13 +5032,13 @@
 (define-method get_entry
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_entry")
-  (return-type "GtkWidget*")
+  (return-type "GtkWidget*" (null-ok))
 )
 
 (define-method get_entry_widget
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_entry_widget")
-  (return-type "GtkWidget*")
+  (return-type "GtkWidget*" (null-ok))
 )
 
 (define-method get_state
@@ -5216,7 +5219,7 @@
 (define-method get_column_title
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_column_title")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
   (parameters
     '("gint" "column")
   )
@@ -5235,7 +5238,7 @@
 (define-method get_row_title
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_row_title")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
   (parameters
     '("gint" "row")
   )
@@ -5264,7 +5267,7 @@
 (define-method row_button_get_label
   (of-object "GtkSheet")
   (c-name "gtk_sheet_row_button_get_label")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
   (parameters
     '("gint" "row")
   )
@@ -5273,7 +5276,7 @@
 (define-method column_button_get_label
   (of-object "GtkSheet")
   (c-name "gtk_sheet_column_button_get_label")
-  (return-type "const-gchar*")
+  (return-type "const-gchar*" (null-ok))
   (parameters
     '("gint" "column")
   )
@@ -5533,13 +5536,13 @@
 (define-method get_vadjustment
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_vadjustment")
-  (return-type "GtkAdjustment*")
+  (return-type "GtkAdjustment*" (null-ok))
 )
 
 (define-method get_hadjustment
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_hadjustment")
-  (return-type "GtkAdjustment*")
+  (return-type "GtkAdjustment*" (null-ok))
 )
 
 (define-method select_range
@@ -5603,7 +5606,7 @@
 (define-method cell_get_text
   (of-object "GtkSheet")
   (c-name "gtk_sheet_cell_get_text")
-  (return-type "gchar*")
+  (return-type "gchar*" (null-ok))
   (parameters
     '("gint" "row")
     '("gint" "col")
@@ -5672,7 +5675,7 @@
 (define-method get_link
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_link")
-  (return-type "gpointer")
+  (return-type "gpointer" (null-ok))
   (parameters
     '("gint" "row")
     '("gint" "col")
@@ -5855,10 +5858,10 @@
   (c-name "gtk_sheet_range_set_border")
   (return-type "none")
   (parameters
-    '("const-GtkSheetRange*" "range")
+    '("const-GtkSheetRange*" "range" (null-ok))
     '("gint" "mask")
     '("guint" "width")
-    '("gint" "line_style")
+    '("gint" "line_style" (default "GDK_LINE_SOLID"))
   )
 )
 
@@ -5896,7 +5899,7 @@
 (define-method put
   (of-object "GtkSheet")
   (c-name "gtk_sheet_put")
-  (return-type "GtkSheetChild*")
+  (return-type "GtkSheetChild*" (null-ok))
   (parameters
     '("GtkWidget*" "widget")
     '("gint" "x")
@@ -5955,7 +5958,7 @@
 (define-method get_child_at
   (of-object "GtkSheet")
   (c-name "gtk_sheet_get_child_at")
-  (return-type "GtkSheetChild*")
+  (return-type "GtkSheetChild*" (null-ok))
   (parameters
     '("gint" "row")
     '("gint" "col")

@@ -12,7 +12,6 @@ class Application(gtk.Window):
         gtk.Window.__init__(self)
         self.set_title=("GtkPlot3D Demo")
         self.set_size_request(550, 650)
-        self.connect("destroy", self.quit)
 
         scrollwin = gtk.ScrolledWindow()
         scrollwin.set_policy(gtk.POLICY_ALWAYS, gtk.POLICY_ALWAYS)
@@ -78,9 +77,7 @@ class Application(gtk.Window):
         canvas.paint()
         canvas.refresh()
         
-    def quit(self, *args):
-        gtk.main_quit()
-
 if __name__ == '__main__':
     app = Application()
+    app.connect("destroy", lambda win : gtk.main_quit())
     gtk.main()

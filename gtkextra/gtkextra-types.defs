@@ -1,6 +1,9 @@
 ;; -*- scheme -*-
 
 ; object definitions ...
+; As for fields, I'm not sure which are safe to expose.
+; I also have no scrubbed which are set by functions.
+; Somebody can help me here.
 
 (define-object CharSelection
   (in-module "Gtk")
@@ -29,6 +32,13 @@
   (parent "GtkHBox")
   (c-name "GtkComboBox")
   (gtype-id "GTK_TYPE_COMBO_BOX")
+  (fields
+    '("GtkWidget*" "button")
+    '("GtkWidget*" "arrow")
+    '("GtkWidget*" "popup")
+    '("GtkWidget*" "popwin")
+    '("GtkWidget*" "frame")
+  )
 )
 
 (define-object ColorCombo
@@ -43,6 +53,14 @@
   (parent "GtkComboBox")
   (c-name "GtkBorderCombo")
   (gtype-id "GTK_TYPE_BORDER_COMBO")
+  (fields
+    '("gint" "nrows")
+    '("gint" "ncols")
+    '("gint" "row")
+    '("gint" "column")
+;    '("GtkWidget***" "button")
+    '("GtkWidget*" "table")
+  )
 )
 
 (define-object DirTree
@@ -50,6 +68,18 @@
   (parent "GtkCTree")
   (c-name "GtkDirTree")
   (gtype-id "GTK_TYPE_DIR_TREE")
+  (fields
+   '("gchar*" "local_hostname")
+   '("gboolean" "show_hidden")
+   '("GdkPixmap*" "my_pc")
+   '("GdkPixmap*" "folder")
+   '("GdkPixmap*" "ofolder")
+   '("GdkPixmap*" "dennied")
+   '("GdkBitmap*" "my_pc_mask")
+   '("GdkBitmap*" "folder_mask")
+   '("GdkBitmap*" "ofolder_mask")
+   '("GdkBitmap*" "dennied_mask")
+  )
 )
 
 (define-object FontCombo
@@ -57,13 +87,30 @@
   (parent "GtkToolbar")
   (c-name "GtkFontCombo")
   (gtype-id "GTK_TYPE_FONT_COMBO")
+  (fields
+    '("GtkWidget*" "name_combo")
+    '("GtkWidget*" "size_combo")
+    '("GtkWidget*" "bold_button")
+    '("GtkWidget*" "italic_button")
+  )
 )
 
-(define-object IconFileSel
+(define-object IconFileSelection
   (in-module "Gtk")
   (parent "GtkWindow")
   (c-name "GtkIconFileSel")
   (gtype-id "GTK_TYPE_ICON_FILE_SEL")
+  (fields
+    '("GtkWidget*" "path_label")
+    '("GtkWidget*" "dir_tree")
+    '("GtkWidget*" "file_list")
+    '("GtkWidget*" "history_combo")
+    '("GtkWidget*" "file_entry")
+    '("GtkWidget*" "filter_entry")
+    '("GtkWidget*" "ok_button")
+    '("GtkWidget*" "cancel_button")
+    '("GtkWidget*" "action_area")
+  )
 )
 
 (define-object IconList
@@ -71,6 +118,9 @@
   (parent "GtkFixed")
   (c-name "GtkIconList")
   (gtype-id "GTK_TYPE_ICON_LIST")
+  (fields
+    '("gint" "num_icons")
+  )
 )
 
 (define-object FileList
@@ -94,6 +144,7 @@
   (gtype-id "GTK_TYPE_PLOT_CANVAS")
   (fields
     '("guint16"  "flags")
+    '("GdkPixmap*" "pixmap")
   )
 )
 
@@ -293,6 +344,18 @@
     '("GtkWidget*" "pixmap")
     '("GtkWidget*" "entry")
     ;'("gpointer" "link")
+  )
+)
+
+(define-boxed SheetRange
+  (in-module "Gtk")
+  (c-name "GtkSheetRange")
+  (gtype-id "GTK_TYPE_SHEET_RANGE")
+  (fields
+    '("gint" "row0")
+    '("gint" "col0")
+    '("gint" "rowi")
+    '("gint" "coli")
   )
 )
 

@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 
-from gtk import *
-from gtkextra import *
+import gtk
+import gtkextra
 
 PREVIEW_TEXT = "ABCDEFGHI abcdefghi 0123456789"
     
-class Application(GtkWindow):
+class Application(gtk.Window):
 
     def __init__(self):
-        GtkWindow.__init__(self, title="GtkFontCombo Demo")
-        self.connect("destroy", mainquit)
+        gtk.Window.__init__(self)
+        self.set_title("GtkFontCombo Demo")
 
-        vbox = GtkVBox()
+        vbox = gtk.VBox()
         self.add(vbox)
 
-        font_combo = GtkFontCombo()
-        vbox.pack_start(font_combo, FALSE, FALSE)
+        font_combo = gtkextra.FontCombo()
+        vbox.pack_start(font_combo, gtk.FALSE, gtk.FALSE)
 
-        preview_entry = GtkEntry()
+        preview_entry = gtk.Entry()
         preview_entry.set_text(PREVIEW_TEXT)
         vbox.pack_start(preview_entry)
 
@@ -27,16 +27,20 @@ class Application(GtkWindow):
         self.show_all()
 
     def new_font(self, font_combo, preview_entry, *args):
-        style = preview_entry.get_style().copy()
-        style.font = font_combo.font
-        preview_entry.set_style(style)
+        if 0:
+            # The C example is as follows:
+            # But pygtk2 style does not allow setting font_desc.
+            style = preview_entry.get_style().copy()
+            style.font_desc = font_combo.get_font_description()
+            preview_entry.set_style(style)
+        else:
+            #This works though.
+            preview_entry.modify_font(font_combo.get_font_description())
         if not preview_entry.get_text():
             preview_entry.set_text(PREVIEW_TEXT)
         preview_entry.set_position(0)
         
-    def mainloop(self):
-        mainloop()
-
 if __name__ == '__main__':		
     app = Application()
-    app.mainloop()
+    app.connect("destroy", lambda win : gtk.main_quit())
+    gtk.main()

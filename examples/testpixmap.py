@@ -74,7 +74,6 @@ class Application(gtk.Window):
 
     def __init__(self):
         gtk.Window.__init__(self)
-        self.connect("destroy", self.quit)
         self.set_title=("GtkPlot3D Demo")
         self.set_size_request(550, 650)
 
@@ -126,10 +125,7 @@ class Application(gtk.Window):
         except:
             pass
 
-    def quit(self, *args):
-        gtk.main_quit()
-
 if __name__ == '__main__':		
     app = Application()
-    #app.connect("destroy", lambda win : gtk.main_quit)
-    gtk.mainloop()
+    app.connect("destroy", lambda win : gtk.main_quit())
+    gtk.main()
