@@ -6,8 +6,11 @@
 /* include this first, before NO_IMPORT_PYGOBJECT is defined */
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
+#include <gtkextra/gtkextra.h>
 
 void pygtkextra_register_classes(PyObject *d);
+void pygtkextra_add_constants(PyObject *module, const gchar *strip_prefix);
+
 extern PyMethodDef pygtkextra_functions[];
 
 DL_EXPORT(void)
@@ -23,6 +26,17 @@ initgtkextra(void)
     init_pygtk();
 
     pygtkextra_register_classes(d);
+    pygtkextra_add_constants(m, "GTK_");
+
+    PyModule_AddIntConstant(m, "PLOT_LETTER_W", GTK_PLOT_LETTER_W);
+    PyModule_AddIntConstant(m, "PLOT_LETTER_H", GTK_PLOT_LETTER_H);
+    PyModule_AddIntConstant(m, "PLOT_LEGAL_W", GTK_PLOT_LEGAL_W);
+    PyModule_AddIntConstant(m, "PLOT_LEGAL_H", GTK_PLOT_LEGAL_H);
+    PyModule_AddIntConstant(m, "PLOT_A4_W", GTK_PLOT_A4_W);
+    PyModule_AddIntConstant(m, "PLOT_A4_H", GTK_PLOT_A4_H);
+    PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_W", GTK_PLOT_EXECUTIVE_W);
+    PyModule_AddIntConstant(m, "PLOT_EXECUTIVE_H", GTK_PLOT_EXECUTIVE_H);
+    PyModule_AddIntConstant(m, "PLOT_CANVAS_DND_FLAGS", GTK_PLOT_CANVAS_DND_FLAGS);
 
     if (PyErr_Occurred())
         Py_FatalError("could not initialise module gtkextra.gtkextra");

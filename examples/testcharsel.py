@@ -3,24 +3,6 @@
 import gtk
 import gtkextra
 
-class xApplication(gtkextra.CharSelection):
-
-    def __init__(self):
-        gtkextra.CharSelection.__init__(self)
-        self.connect("destroy", gtk.main_quit)
-        self.cancel_button.connect("clicked", gtk.main_quit)
-        self.ok_button.connect("clicked", self.ok_clicked)
-        self.show()
-
-    def ok_clicked(self, *args):
-        psfont = self.font_combo.psfont
-        psname = psfont.psname
-        code = self.get_selection()
-        print "%s, %d" % (psname, code)
-        
-    def mainloop(self):
-        gtk.main()
-
 class Application(gtkextra.CharSelection):
 
     def __init__(self):
@@ -31,11 +13,11 @@ class Application(gtkextra.CharSelection):
         self.show()
 
     def ok_clicked(self, *args):
-        #FIXME
-        psfont = self.font_combo.psfont
-        psname = psfont.psname
-        code = self.get_selection()
-        print "%s, %d" % (psname, code)
+        psfont = self.font_combo.get_psfont()
+        psname_f = psfont.get_psfontname()
+        psname_a = psfont.psname
+        code = self.selection
+        print "psname_f=%s psname_a=%s code=%d " % (psname_f, psname_a, code)
         
     def quit(self, *args):
         gtk.main_quit()

@@ -24,16 +24,19 @@ gtkextramodule_la_CFLAGS = $(PYGTK_CFLAGS) $(GTK_CFLAGS) $(GTKEXTRA_CFLAGS)
 gtkextramodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex initgtkextra
 gtkextramodule_la_LIBADD =  $(GTKEXTRA_LIBS) $(PYGTK_LIBS) $(GTK_LIBS)
 gtkextramodule_la_SOURCES = gtkextramodule.c
-gtkextra.c: $(COMMONDEFS) gtkextra.override
+gtkextra.c: $(COMMONDEFS) gtkextra-addons.defs gtkextra-types.defs gtkextra.override
 nodist_gtkextramodule_la_SOURCES = gtkextra.c
 
 CLEANFILES += gtkextra.c
-defs_DATA += gtkextra.defs
+defs_DATA += gtkextra.defs gtkextra-types.defs
 EXTRA_DIST += gtkextra.override
+
+#CODEGEN=$(PYGTK_DEFSDIR)/../codegen/codegen.py
+CODEGEN=$(srcdir)/mycodegen.py
 
 .defs.c:
 	(cd $(srcdir) \
-	 && $(PYTHON) $(PYGTK_DEFSDIR)/../codegen/codegen.py \
+	 && $(PYTHON) $(CODEGEN) \
 	    --register $(PYGTK_DEFSDIR)/pango-types.defs \
 	    --register $(PYGTK_DEFSDIR)/gdk-types.defs \
 	    --register $(PYGTK_DEFSDIR)/gtk-types.defs \

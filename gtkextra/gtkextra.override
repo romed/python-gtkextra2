@@ -1,4 +1,3 @@
-/* This is top */
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
@@ -17,8 +16,40 @@ headers
 #define GTK_TYPE_PLOT3_D (gtk_plot3d_get_type())
 #define GTK_TYPE_TOGGLE_COMBO (gtk_toggle_combo_get_type())
 
+/* Hack boxed types. Just enought to let code generator compile. Not perfectly correct! */
+//GType   gtk_psfont_get_type (void) G_GNUC_CONST;
+#define GTK_TYPE_PSFONT (gtk_psfont_get_type ())
+static GType
+gtk_psfont_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_pointer_type_register_static ("GtkPSFont");
+
+  return our_type;
+}
+
+#if 0
+//GType   gtk_plot_canvas_child_get_type (void) G_GNUC_CONST;
+#define GTK_TYPE_PLOT_CANVAS_CHILD (gtk_plot_canvas_child_get_type ())
+static GType
+gtk_plot_canvas_child_get_type (void)
+{
+  static GType our_type = 0;
+  
+  if (our_type == 0)
+    our_type = g_pointer_type_register_static ("GtkPlotCanvasChild");
+
+  return our_type;
+}
+#endif
+
 /* This one is probably an "error" in h2def.py */
 #define GTK_PLOT3_D GTK_PLOT3D
+
+guint16 gtk_plot_canvas_set_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_SET_FLAGS(canvas, flags); }
+guint16 gtk_plot_canvas_unset_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_UNSET_FLAGS(canvas, flags); }
 
 %%
 modulename gtkextra
@@ -38,16 +69,42 @@ import gtk._gtk.ToggleButton as PyGtkToggleButton_Type
 import gtk._gtk.Adjustment as PyGtkAdjustment_Type
 import gtk._gtk.HBox as PyGtkHBox_Type
 
+%%
+override gtk_psfont_get_char_size
+static PyObject *
+_wrap_gtk_psfont_get_char_size(PyObject *self)
+{
+    PyErr_SetString(PyExc_NotImplementedError, __FUNCTION__ );
+    return NULL;
+}
 
 %%
-#ignore-glob *_get_type
+override-attr GtkPlotCanvasChild.data
+static PyObject *
+_wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
+{
+    // FIXME
+    switch (pyg_pointer_get(self, GtkPlotCanvasChild)->type) {
+    case GTK_PLOT_CANVAS_NONE:
+	Py_INCREF(Py_None);
+	return Py_None;
+#if 0
+    case GTK_PLOT_CANVAS_PLOT:
+    case GTK_PLOT_CANVAS_DATA:
+    case GTK_PLOT_CANVAS_LEGENDS:
+    case GTK_PLOT_CANVAS_TEXT:
+	return pygobject_new((GObject *)(pyg_pointer_get(self, GtkPlotCanvasChild)->data));
+#endif
+    default:
+	return PyCObject_FromVoidPtr(pyg_pointer_get(self, GtkPlotCanvasChild)->data, NULL);
+    }
+}
+
+%%
+ignore-glob *_get_type
 %%
 ignore
   triangulate
   gtk_sheet_row_resizable
   gtkextra_check_version
   gtk_plot_dt_set_quadtrilateral
-
-
-
-

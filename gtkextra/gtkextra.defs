@@ -4,512 +4,8 @@
 ;; python2 ~/gnome-cvs/gnome-python/pygtk/codegen/h2def.py /usr/include/gtk-2.0/gtkextra/*.h >gtkextra_.defs
 ;; Then merge old defs with new defs with mergedefs.py (for fields)
 
-; object definitions ...
-(define-object CharSelection
-  (in-module "Gtk")
-  (parent "GtkWindow")
-  (c-name "GtkCharSelection")
-  (gtype-id "GTK_TYPE_CHAR_SELECTION")
-  (fields
-    '("GtkFontCombo*" "font_combo")
-    '("GtkTable*" "table")
-    ;;GtkToggleButton *button[256];
-    '("gint" "selection")
-    '("GtkWidget*" "ok_button")
-    '("GtkWidget*" "cancel_button")
-    '("GtkWidget*" "action_area")
-  )
-)
-
-(define-object CheckItem
-  (in-module "Gtk")
-  (parent "GtkToggleButton")
-  (c-name "GtkCheckItem")
-  (gtype-id "GTK_TYPE_CHECK_ITEM")
-)
-
-(define-object ComboBox
-  (in-module "Gtk")
-  (parent "GtkHBox")
-  (c-name "GtkComboBox")
-  (gtype-id "GTK_TYPE_COMBO_BOX")
-)
-
-(define-object ColorCombo
-  (in-module "Gtk")
-  (parent "GtkComboBox")
-  (c-name "GtkColorCombo")
-  (gtype-id "GTK_TYPE_COLOR_COMBO")
-)
-
-(define-object BorderCombo
-  (in-module "Gtk")
-  (parent "GtkComboBox")
-  (c-name "GtkBorderCombo")
-  (gtype-id "GTK_TYPE_BORDER_COMBO")
-)
-
-(define-object DirTree
-  (in-module "Gtk")
-  (parent "GtkCTree")
-  (c-name "GtkDirTree")
-  (gtype-id "GTK_TYPE_DIR_TREE")
-)
-
-(define-object FontCombo
-  (in-module "Gtk")
-  (parent "GtkToolbar")
-  (c-name "GtkFontCombo")
-  (gtype-id "GTK_TYPE_FONT_COMBO")
-)
-
-(define-object IconFileSel
-  (in-module "Gtk")
-  (parent "GtkWindow")
-  (c-name "GtkIconFileSel")
-  (gtype-id "GTK_TYPE_ICON_FILE_SEL")
-)
-
-(define-object IconList
-  (in-module "Gtk")
-  (parent "GtkFixed")
-  (c-name "GtkIconList")
-  (gtype-id "GTK_TYPE_ICON_LIST")
-)
-
-(define-object FileList
-  (in-module "Gtk")
-  (parent "GtkIconList")
-  (c-name "GtkFileList")
-  (gtype-id "GTK_TYPE_FILE_LIST")
-)
-
-(define-object ItemEntry
-  (in-module "Gtk")
-  (parent "GtkEntry")
-  (c-name "GtkItemEntry")
-  (gtype-id "GTK_TYPE_ITEM_ENTRY")
-)
-
-(define-object Plot
-  (in-module "Gtk")
-  (parent "GtkWidget")
-  (c-name "GtkPlot")
-  (gtype-id "GTK_TYPE_PLOT")
-)
-
-(define-object Plot3D
-  (in-module "Gtk")
-  (parent "GtkPlot")
-  (c-name "GtkPlot3D")
-  (gtype-id "GTK_TYPE_PLOT3_D")
-)
-
-(define-object PlotAxis
-  (in-module "Gtk")
-  (parent "GtkObject")
-  (c-name "GtkPlotAxis")
-  (gtype-id "GTK_TYPE_PLOT_AXIS")
-)
-
-(define-object PlotDT
-  (in-module "Gtk")
-  (parent "GtkObject")
-  (c-name "GtkPlotDT")
-  (gtype-id "GTK_TYPE_PLOT_DT")
-)
-
-(define-object PlotData
-  (in-module "Gtk")
-  (parent "GtkWidget")
-  (c-name "GtkPlotData")
-  (gtype-id "GTK_TYPE_PLOT_DATA")
-)
-
-(define-object PlotBox
-  (in-module "Gtk")
-  (parent "GtkPlotData")
-  (c-name "GtkPlotBox")
-  (gtype-id "GTK_TYPE_PLOT_BOX")
-)
-
-(define-object PlotBar
-  (in-module "Gtk")
-  (parent "GtkPlotData")
-  (c-name "GtkPlotBar")
-  (gtype-id "GTK_TYPE_PLOT_BAR")
-)
-
-(define-object PlotFlux
-  (in-module "Gtk")
-  (parent "GtkPlotData")
-  (c-name "GtkPlotFlux")
-  (gtype-id "GTK_TYPE_PLOT_FLUX")
-)
-
-(define-object PlotPC
-  (in-module "Gtk")
-  (parent "GtkObject")
-  (c-name "GtkPlotPC")
-  (gtype-id "GTK_TYPE_PLOT_PC")
-)
-
-(define-object PlotGdk
-  (in-module "Gtk")
-  (parent "GtkPlotPC")
-  (c-name "GtkPlotGdk")
-  (gtype-id "GTK_TYPE_PLOT_GDK")
-)
-
-(define-object PlotPS
-  (in-module "Gtk")
-  (parent "GtkPlotPC")
-  (c-name "GtkPlotPS")
-  (gtype-id "GTK_TYPE_PLOT_PS")
-)
-
-(define-object PlotPixmap
-  (in-module "Gtk")
-  (parent "GtkPlotData")
-  (c-name "GtkPlotPixmap")
-  (gtype-id "GTK_TYPE_PLOT_PIXMAP")
-)
-
-(define-object PlotPolar
-  (in-module "Gtk")
-  (parent "GtkPlot")
-  (c-name "GtkPlotPolar")
-  (gtype-id "GTK_TYPE_PLOT_POLAR")
-)
-
-(define-object PlotSurface
-  (in-module "Gtk")
-  (parent "GtkPlotData")
-  (c-name "GtkPlotSurface")
-  (gtype-id "GTK_TYPE_PLOT_SURFACE")
-)
-
-(define-object PlotCSurface
-  (in-module "Gtk")
-  (parent "GtkPlotSurface")
-  (c-name "GtkPlotCSurface")
-  (gtype-id "GTK_TYPE_PLOT_CSURFACE")
-)
-
-(define-object Sheet
-  (in-module "Gtk")
-  (parent "GtkContainer")
-  (c-name "GtkSheet")
-  (gtype-id "GTK_TYPE_SHEET")
-)
-
-(define-object ToggleCombo
-  (in-module "Gtk")
-  (parent "GtkComboBox")
-  (c-name "GtkToggleCombo")
-  (gtype-id "GTK_TYPE_TOGGLE_COMBO")
-)
-
-;; Enumerations and flags ...
-
-(define-enum PlotPlane
-  (in-module "Gtk")
-  (c-name "GtkPlotPlane")
-  (gtype-id "GTK_TYPE_PLOT_PLANE")
-  (values
-    '("xy" "GTK_PLOT_PLANE_XY")
-    '("yx" "GTK_PLOT_PLANE_YX")
-    '("xz" "GTK_PLOT_PLANE_XZ")
-    '("zx" "GTK_PLOT_PLANE_ZX")
-    '("yz" "GTK_PLOT_PLANE_YZ")
-    '("zy" "GTK_PLOT_PLANE_ZY")
-  )
-)
-
-(define-flags PlotSide
-  (in-module "Gtk")
-  (c-name "GtkPlotSide")
-  (gtype-id "GTK_TYPE_PLOT_SIDE")
-  (values
-    '("xy" "GTK_PLOT_SIDE_XY")
-    '("xz" "GTK_PLOT_SIDE_XZ")
-    '("yx" "GTK_PLOT_SIDE_YX")
-    '("yz" "GTK_PLOT_SIDE_YZ")
-    '("zx" "GTK_PLOT_SIDE_ZX")
-    '("zy" "GTK_PLOT_SIDE_ZY")
-  )
-)
-
-(define-enum PlotBarUnits
-  (in-module "Gtk")
-  (c-name "GtkPlotBarUnits")
-  (gtype-id "GTK_TYPE_PLOT_BAR_UNITS")
-  (values
-    '("points" "GTK_PLOT_BAR_POINTS")
-    '("relative" "GTK_PLOT_BAR_RELATIVE")
-    '("absolute" "GTK_PLOT_BAR_ABSOLUTE")
-  )
-)
-
-(define-enum PlotCanvasAction
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasAction")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_ACTION")
-  (values
-    '("inactive" "GTK_PLOT_CANVAS_ACTION_INACTIVE")
-    '("selection" "GTK_PLOT_CANVAS_ACTION_SELECTION")
-    '("drag" "GTK_PLOT_CANVAS_ACTION_DRAG")
-    '("resize" "GTK_PLOT_CANVAS_ACTION_RESIZE")
-  )
-)
-
-(define-flags PlotCanvasFlag
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasFlag")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_FLAG")
-  (values
-    '("frozen" "GTK_PLOT_CANVAS_FROZEN")
-    '("can-move" "GTK_PLOT_CANVAS_CAN_MOVE")
-    '("can-x-resize" "GTK_PLOT_CANVAS_CAN_X_RESIZE")
-    '("can-y-resize" "GTK_PLOT_CANVAS_CAN_Y_RESIZE")
-  )
-)
-
-(define-flags PlotCanvasArrow
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasArrow")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_ARROW")
-  (values
-    '("none" "GTK_PLOT_ARROW_NONE")
-    '("origin" "GTK_PLOT_ARROW_ORIGIN")
-    '("end" "GTK_PLOT_ARROW_END")
-  )
-)
-
-(define-enum PlotCanvasSelection
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasSelection")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_SELECTION")
-  (values
-    '("none" "GTK_PLOT_CANVAS_SELECT_NONE")
-    '("markers" "GTK_PLOT_CANVAS_SELECT_MARKERS")
-    '("target" "GTK_PLOT_CANVAS_SELECT_TARGET")
-  )
-)
-
-(define-enum PlotCanvasSelectionMode
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasSelectionMode")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_SELECTION_MODE")
-  (values
-    '("1" "GTK_PLOT_CANVAS_SELECT_CLICK_1")
-    '("2" "GTK_PLOT_CANVAS_SELECT_CLICK_2")
-  )
-)
-
-(define-enum PlotCanvasType
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasType")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_TYPE")
-  (values
-    '("none" "GTK_PLOT_CANVAS_NONE")
-    '("plot" "GTK_PLOT_CANVAS_PLOT")
-    '("axis" "GTK_PLOT_CANVAS_AXIS")
-    '("legends" "GTK_PLOT_CANVAS_LEGENDS")
-    '("title" "GTK_PLOT_CANVAS_TITLE")
-    '("text" "GTK_PLOT_CANVAS_TEXT")
-    '("data" "GTK_PLOT_CANVAS_DATA")
-    '("line" "GTK_PLOT_CANVAS_LINE")
-    '("rectangle" "GTK_PLOT_CANVAS_RECTANGLE")
-    '("ellipse" "GTK_PLOT_CANVAS_ELLIPSE")
-    '("pixmap" "GTK_PLOT_CANVAS_PIXMAP")
-    '("marker" "GTK_PLOT_CANVAS_MARKER")
-    '("custom" "GTK_PLOT_CANVAS_CUSTOM")
-  )
-)
-
-(define-enum PlotCanvasPos
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasPos")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_POS")
-  (values
-    '("out" "GTK_PLOT_CANVAS_OUT")
-    '("in" "GTK_PLOT_CANVAS_IN")
-    '("left" "GTK_PLOT_CANVAS_LEFT")
-    '("right" "GTK_PLOT_CANVAS_RIGHT")
-    '("top" "GTK_PLOT_CANVAS_TOP")
-    '("bottom" "GTK_PLOT_CANVAS_BOTTOM")
-    '("top-left" "GTK_PLOT_CANVAS_TOP_LEFT")
-    '("top-right" "GTK_PLOT_CANVAS_TOP_RIGHT")
-    '("bottom-left" "GTK_PLOT_CANVAS_BOTTOM_LEFT")
-    '("bottom-right" "GTK_PLOT_CANVAS_BOTTOM_RIGHT")
-  )
-)
-
-(define-enum PlotScale
-  (in-module "Gtk")
-  (c-name "GtkPlotScale")
-  (gtype-id "GTK_TYPE_PLOT_SCALE")
-  (values
-    '("inear" "GTK_PLOT_SCALE_LINEAR")
-    '("og10" "GTK_PLOT_SCALE_LOG10")
-  )
-)
-
-(define-enum PlotSymbolType
-  (in-module "Gtk")
-  (c-name "GtkPlotSymbolType")
-  (gtype-id "GTK_TYPE_PLOT_SYMBOL_TYPE")
-  (values
-    '("none" "GTK_PLOT_SYMBOL_NONE")
-    '("square" "GTK_PLOT_SYMBOL_SQUARE")
-    '("circle" "GTK_PLOT_SYMBOL_CIRCLE")
-    '("up-triangle" "GTK_PLOT_SYMBOL_UP_TRIANGLE")
-    '("down-triangle" "GTK_PLOT_SYMBOL_DOWN_TRIANGLE")
-    '("right-triangle" "GTK_PLOT_SYMBOL_RIGHT_TRIANGLE")
-    '("left-triangle" "GTK_PLOT_SYMBOL_LEFT_TRIANGLE")
-    '("diamond" "GTK_PLOT_SYMBOL_DIAMOND")
-    '("plus" "GTK_PLOT_SYMBOL_PLUS")
-    '("cross" "GTK_PLOT_SYMBOL_CROSS")
-    '("star" "GTK_PLOT_SYMBOL_STAR")
-    '("dot" "GTK_PLOT_SYMBOL_DOT")
-    '("impulse" "GTK_PLOT_SYMBOL_IMPULSE")
-  )
-)
-
-(define-enum PlotSymbolStyle
-  (in-module "Gtk")
-  (c-name "GtkPlotSymbolStyle")
-  (gtype-id "GTK_TYPE_PLOT_SYMBOL_STYLE")
-  (values
-    '("empty" "GTK_PLOT_SYMBOL_EMPTY")
-    '("filled" "GTK_PLOT_SYMBOL_FILLED")
-    '("opaque" "GTK_PLOT_SYMBOL_OPAQUE")
-  )
-)
-
-(define-enum PlotBorderStyle
-  (in-module "Gtk")
-  (c-name "GtkPlotBorderStyle")
-  (gtype-id "GTK_TYPE_PLOT_BORDER_STYLE")
-  (values
-    '("none" "GTK_PLOT_BORDER_NONE")
-    '("line" "GTK_PLOT_BORDER_LINE")
-    '("shadow" "GTK_PLOT_BORDER_SHADOW")
-  )
-)
-
-(define-enum PlotLineStyle
-  (in-module "Gtk")
-  (c-name "GtkPlotLineStyle")
-  (gtype-id "GTK_TYPE_PLOT_LINE_STYLE")
-  (values
-    '("none" "GTK_PLOT_LINE_NONE")
-    '("solid" "GTK_PLOT_LINE_SOLID")
-    '("dotted" "GTK_PLOT_LINE_DOTTED")
-    '("dashed" "GTK_PLOT_LINE_DASHED")
-    '("dot-dash" "GTK_PLOT_LINE_DOT_DASH")
-    '("dot-dot-dash" "GTK_PLOT_LINE_DOT_DOT_DASH")
-    '("dot-dash-dash" "GTK_PLOT_LINE_DOT_DASH_DASH")
-  )
-)
-
-(define-enum PlotConnector
-  (in-module "Gtk")
-  (c-name "GtkPlotConnector")
-  (gtype-id "GTK_TYPE_PLOT_CONNECTOR")
-  (values
-    '("none" "GTK_PLOT_CONNECT_NONE")
-    '("straight" "GTK_PLOT_CONNECT_STRAIGHT")
-    '("spline" "GTK_PLOT_CONNECT_SPLINE")
-    '("hv-step" "GTK_PLOT_CONNECT_HV_STEP")
-    '("vh-step" "GTK_PLOT_CONNECT_VH_STEP")
-    '("middle-step" "GTK_PLOT_CONNECT_MIDDLE_STEP")
-  )
-)
-
-(define-flags PlotLabelPos
-  (in-module "Gtk")
-  (c-name "GtkPlotLabelPos")
-  (gtype-id "GTK_TYPE_PLOT_LABEL_POS")
-  (values
-    '("none" "GTK_PLOT_LABEL_NONE")
-    '("in" "GTK_PLOT_LABEL_IN")
-    '("out" "GTK_PLOT_LABEL_OUT")
-  )
-)
-
-(define-enum PlotError
-  (in-module "Gtk")
-  (c-name "GtkPlotError")
-  (gtype-id "GTK_TYPE_PLOT_ERROR")
-  (values
-    '("div-zero" "GTK_PLOT_ERROR_DIV_ZERO")
-    '("log-neg" "GTK_PLOT_ERROR_LOG_NEG")
-  )
-)
-
-(define-enum PlotOrientation
-  (in-module "Gtk")
-  (c-name "GtkPlotOrientation")
-  (gtype-id "GTK_TYPE_PLOT_ORIENTATION")
-  (values
-    '("x" "GTK_PLOT_AXIS_X")
-    '("y" "GTK_PLOT_AXIS_Y")
-    '("z" "GTK_PLOT_AXIS_Z")
-  )
-)
-
-(define-enum PlotAxisPos
-  (in-module "Gtk")
-  (c-name "GtkPlotAxisPos")
-  (gtype-id "GTK_TYPE_PLOT_AXIS_POS")
-  (values
-    '("left" "GTK_PLOT_AXIS_LEFT")
-    '("right" "GTK_PLOT_AXIS_RIGHT")
-    '("top" "GTK_PLOT_AXIS_TOP")
-    '("bottom" "GTK_PLOT_AXIS_BOTTOM")
-  )
-)
-
-(define-enum PlotLabelStyle
-  (in-module "Gtk")
-  (c-name "GtkPlotLabelStyle")
-  (gtype-id "GTK_TYPE_PLOT_LABEL_STYLE")
-  (values
-    '("float" "GTK_PLOT_LABEL_FLOAT")
-    '("exp" "GTK_PLOT_LABEL_EXP")
-    '("pow" "GTK_PLOT_LABEL_POW")
-  )
-)
-
-(define-flags PlotTicksPos
-  (in-module "Gtk")
-  (c-name "GtkPlotTicksPos")
-  (gtype-id "GTK_TYPE_PLOT_TICKS_POS")
-  (values
-    '("none" "GTK_PLOT_TICKS_NONE")
-    '("in" "GTK_PLOT_TICKS_IN")
-    '("out" "GTK_PLOT_TICKS_OUT")
-  )
-)
-
-(define-enum SheetAttrType
-  (in-module "Gtk")
-  (c-name "GtkSheetAttrType")
-  (gtype-id "GTK_TYPE_SHEET_ATTR_TYPE")
-  (values
-    '("foreground" "GTK_SHEET_FOREGROUND")
-    '("background" "GTK_SHEET_BACKGROUND")
-    '("font" "GTK_SHEET_FONT")
-    '("justification" "GTK_SHEET_JUSTIFICATION")
-    '("border" "GTK_SHEET_BORDER")
-    '("border-color" "GTK_SHEET_BORDER_COLOR")
-    '("is-editable" "GTK_SHEET_IS_EDITABLE")
-    '("is-visible" "GTK_SHEET_IS_VISIBLE")
-  )
-)
-
+(include "gtkextra-types.defs")
+(include "gtkextra-addons.defs")
 
 ;; From /usr/include/gtk-2.0/gtkextra/gtkbordercombo.h
 
@@ -2073,7 +1569,7 @@
   (parameters
     '("gint" "width")
     '("gint" "height")
-    '("gdouble" "magnification")
+    '("gdouble" "magnification" (default "1.0"))
   )
 )
 
@@ -2269,11 +1765,11 @@
   (parameters
     '("gdouble" "x")
     '("gdouble" "y")
-    '("const-gchar*" "font")
+    '("const-gchar*" "font" (null-ok) (default "NULL"))
     '("gint" "height")
     '("gint" "angle")
-    '("const-GdkColor*" "fg")
-    '("const-GdkColor*" "bg")
+    '("const-GdkColor*" "fg" (null-ok) (default "NULL"))
+    '("const-GdkColor*" "bg" (null-ok) (default "NULL"))
     '("gboolean" "transparent")
     '("GtkJustification" "justification")
     '("const-gchar*" "text")
@@ -3435,7 +2931,7 @@
   (is-constructor-of "GtkPlot")
   (return-type "GtkWidget*")
   (parameters
-    '("GdkDrawable*" "drawable")
+    '("GdkDrawable*" "drawable" (default "NULL"))
   )
 )
 
@@ -4380,10 +3876,10 @@
   (c-name "gtk_plot_legends_set_attributes")
   (return-type "none")
   (parameters
-    '("const-gchar*" "font")
+    '("const-gchar*" "font" (null-ok) (default "NULL"))
     '("gint" "height")
-    '("const-GdkColor*" "foreground")
-    '("const-GdkColor*" "background")
+    '("const-GdkColor*" "foreground" (null-ok) (default "NULL"))
+    '("const-GdkColor*" "background" (null-ok) (default "NULL"))
   )
 )
 
@@ -4757,20 +4253,6 @@
 
 ;; From /usr/include/gtk-2.0/gtkextra/gtkplotprint.h
 
-(define-method export_ps_with_size
-  (of-object "GtkPlot")
-  (c-name "gtk_plot_export_ps_with_size")
-  (return-type "gboolean")
-  (parameters
-    '("char*" "file_name")
-    '("gint" "orient")
-    '("gint" "epsflag")
-    '("gint" "units")
-    '("gint" "width")
-    '("gint" "height")
-  )
-)
-
 (define-method export_ps
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_export_ps")
@@ -4788,12 +4270,13 @@
   (c-name "gtk_plot_canvas_export_ps_with_size")
   (return-type "gboolean")
   (parameters
-    '("char*" "file_name")
-    '("gint" "orient")
-    '("gint" "epsflag")
-    '("gint" "units")
-    '("gint" "width")
-    '("gint" "height")
+    '("gchar*" "file_name")
+    '("gint" "orient" (default "GTK_PLOT_PORTRAIT"))
+    '("gint" "eps" (default "FALSE"))
+    '("gint" "units" (default "GTK_PLOT_PSPOINTS"))
+    '("gint" "width" (default "GTK_PLOT_LETTER_W"))
+    '("gint" "height" (default "GTK_PLOT_LETTER_H"))
+
   )
 )
 
@@ -5283,7 +4766,8 @@
 (define-method get_psfontname
   (of-object "GtkPSFont")
   (c-name "gtk_psfont_get_psfontname")
-  (return-type "gchar*")
+  ;;FIXME (return-type "gchar*")
+  (return-type "const-gchar*")
 )
 
 (define-function gtk_psfont_add_font
