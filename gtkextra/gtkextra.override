@@ -1170,10 +1170,13 @@ _wrap_gtk_plot_data_clone(PyGObject *self)
 
     py_copy = pygobject_new((GObject*)copy);
     gtk_plot_data_clone(GTK_PLOT_DATA(self->obj), copy);
+    g_object_unref(copy);
 
     for (i=0; i < G_N_ELEMENTS(pygtkextra_keys); i++) {
 	const char *key  = pygtkextra_keys[i];
-	pygtkextra_set_data( (PyGObject*)py_copy, key, pygtkextra_get_data(self, key));
+	PyObject *py_obj = pygtkextra_get_data(self, key);
+	pygtkextra_set_data( (PyGObject*)py_copy, key, py_obj);
+	Py_DECREF(py_obj);
     }
 
     return py_copy;
@@ -1384,6 +1387,31 @@ _wrap_gtk_plot_get_point(PyGObject *self, PyObject *args)
     }
     gtk_plot_get_point(GTK_PLOT(self->obj), x, y, &xx, &yy);
     return Py_BuildValue("(dd)", xx, yy);
+}
+%%
+override-attr GtkPlot.data_sets
+static PyObject *
+_wrap_gtk_plot__get_data_sets(PyGObject *self, void *closure)
+{
+    GList *list, *tmp;
+    PyObject *py_list;
+
+    list = GTK_PLOT(self->obj)->data_sets;
+
+    if ((py_list = PyList_New(0)) == NULL) {
+	return NULL;
+    }
+    for (tmp = list; tmp != NULL; tmp = tmp->next) {
+	PyObject *gtk_obj = pygobject_new(G_OBJECT(tmp->data));
+
+	if (gtk_obj == NULL) {
+	    Py_DECREF(py_list);
+	    return NULL;
+	}
+	PyList_Append(py_list, gtk_obj);
+	Py_DECREF(gtk_obj);
+    }
+    return py_list;
 }
 %%
 override gtk_plot_get_xrange noargs

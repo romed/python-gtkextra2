@@ -153,6 +153,9 @@
   (parent "GtkWidget")
   (c-name "GtkPlot")
   (gtype-id "GTK_TYPE_PLOT")
+  (fields
+    '("GList*"  "data_sets")
+  )
 )
 
 (define-object Plot3D
@@ -563,6 +566,7 @@
     '("ellipse" "GTK_PLOT_CANVAS_ELLIPSE")
     '("pixmap" "GTK_PLOT_CANVAS_PIXMAP")
     '("marker" "GTK_PLOT_CANVAS_MARKER")
+    '("polygon" "GTK_PLOT_CANVAS_POLYGON")
     '("custom" "GTK_PLOT_CANVAS_CUSTOM")
   )
 )

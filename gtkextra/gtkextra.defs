@@ -1877,6 +1877,21 @@
   )
 )
 
+(define-method put_polygon
+  (of-object "GtkPlotCanvas")
+  (c-name "gtk_plot_canvas_put_polygon_PY")
+  (return-type "GtkPlotCanvasChild*")
+  (parameters
+    '("GtkPlotPoint*" "points")
+    '("guint" "npoints")
+    '("GtkPlotLineStyle" "style" (default "GTK_PLOT_LINE_SOLID"))
+    '("gfloat" "width" (default "1.0"))
+    '("const-GdkColor*" "fg" (default "NULL") (null-ok))
+    '("const-GdkColor*" "bg" (default "NULL") (null-ok))
+    '("gboolean" "fill" (default "TRUE"))
+  )
+)
+
 (define-method put_pixmap
   (of-object "GtkPlotCanvas")
   (c-name "gtk_plot_canvas_put_pixmap")
@@ -1956,6 +1971,32 @@
 (define-method ellipse_set_attributes
   (of-object "GtkPlotCanvasChild")
   (c-name "gtk_plot_canvas_ellipse_set_attributes")
+  (return-type "none")
+  (parameters
+    '("GtkPlotLineStyle" "style")
+    '("gfloat" "width")
+    '("const-GdkColor*" "fg" (null-ok))
+    '("const-GdkColor*" "bg" (null-ok))
+    '("gboolean" "fill")
+  )
+)
+
+;(define-function gtk_plot_canvas_polygon_set_attributes
+;  (c-name "gtk_plot_canvas_polygon_set_attributes")
+;  (return-type "none")
+;  (parameters
+;    '("GtkPlotCanvasChild*" "child")
+;    '("GtkPlotLineStyle" "style")
+;    '("gfloat" "width")
+;    '("const-GdkColor*" "fg")
+;    '("const-GdkColor*" "bg")
+;    '("gboolean" "fill")
+;  )
+;)
+
+(define-method polygon_set_attributes
+  (of-object "GtkPlotCanvasChild")
+  (c-name "gtk_plot_canvas_polygon_set_attributes")
   (return-type "none")
   (parameters
     '("GtkPlotLineStyle" "style")
