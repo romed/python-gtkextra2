@@ -1,12 +1,36 @@
 /* -*- Mode: C; c-basic-offset: 4 -*- */
 %%
 headers
+/*
+ * Python bindings for the GtkExtra widget set
+ *
+ * Copyright (C) 2000-2001 Andreas Voegele
+ * Copyright (C) 2002 Toby D. Reeves
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 #define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
 #include <gtkextra/gtkextra.h>
 
-/* Fixup boo-boo's or ommissions.  Probably should be fixed in gtkextra.*/
+/* ----------------------------------------------------------------------
+ Fixup boo-boo's or ommissions.  Probably should be fixed in gtkextra.
+*/
 #define GTK_ICON_FILE_SEL GTK_ICON_FILESEL
 #define GTK_TYPE_ICON_FILE_SEL (gtk_icon_file_selection_get_type())
 #define GTK_TYPE_COMBO_BOX (gtk_combobox_get_type())
@@ -16,8 +40,17 @@ headers
 #define GTK_TYPE_PLOT3_D (gtk_plot3d_get_type())
 #define GTK_TYPE_TOGGLE_COMBO (gtk_toggle_combo_get_type())
 
-/* Hack boxed types. Just enought to let code generator compile. Not perfectly correct! */
-//GType   gtk_psfont_get_type (void) G_GNUC_CONST;
+/* Hack boxed types. Just enought to let code generator compile. Not correct!
+   These and lots more need to be fixed in gtkextra code.
+   A good example is GtkIconSet in gtkiconfactory.[hc].
+
+   I wish 
+     void gtk_plot_draw_text (GtkPlot *plot, GtkPlotText text);
+   was instead
+     void gtk_plot_draw_text (GtkPlot *plot, GtkPlotText *text);
+   for all similiar functions.
+
+ */
 #define GTK_TYPE_PSFONT (gtk_psfont_get_type ())
 static GType
 gtk_psfont_get_type (void)
@@ -30,20 +63,27 @@ gtk_psfont_get_type (void)
   return our_type;
 }
 
-#if 0
-//GType   gtk_plot_canvas_child_get_type (void) G_GNUC_CONST;
-#define GTK_TYPE_PLOT_CANVAS_CHILD (gtk_plot_canvas_child_get_type ())
+#define GTK_TYPE_PLOT_TEXT (gtk_plot_text_get_type ())
 static GType
-gtk_plot_canvas_child_get_type (void)
+gtk_plot_text_get_type (void)
 {
   static GType our_type = 0;
-  
-  if (our_type == 0)
-    our_type = g_pointer_type_register_static ("GtkPlotCanvasChild");
 
+#if 1 //HACK 
+  if (our_type == 0)
+    our_type = g_pointer_type_register_static ("GtkPlotText");
+#else //Should be something similiar to this
+  if (our_type == 0)
+    our_type = g_boxed_type_register_static ("GtkPlotText",
+					     (GBoxedCopyFunc) gtk_plot_text_ref,
+					     (GBoxedFreeFunc) gtk_plot_text_unref);
+#endif
   return our_type;
 }
-#endif
+
+
+static void gtk_plot_draw_text_PY (GtkPlot *plot, GtkPlotText *text) { gtk_plot_draw_text(plot, *text); }
+
 
 /* This one is probably an "error" in h2def.py */
 #define GTK_PLOT3_D GTK_PLOT3D
@@ -51,6 +91,68 @@ gtk_plot_canvas_child_get_type (void)
 guint16 gtk_plot_canvas_set_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_SET_FLAGS(canvas, flags); }
 guint16 gtk_plot_canvas_unset_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_UNSET_FLAGS(canvas, flags); }
 
+/* ----------------------------------------------------------------------
+   Functions for converting Python sequence like objects To/From C arrays.
+   The C arrays are limited to either type gdouble* or gint*.
+
+   This is very limited for now.  It will grow to include NumPy and some 
+   generic object get/set method look-up and use.
+
+   May desire to more this out to separate file.
+
+   May reuse large parts of Andreas Voegele's code here. May not.
+   I have to first become more familiar with the gtkextra C code.
+
+   For now, I'll just leak....
+
+   Also, not doing iterators or function dataset's (yet).
+   
+ */
+int
+pygtkextra_get_points(PyObject *sequence, gdouble** out_points)
+{
+    int n = 0;
+    gdouble *points = NULL;
+    if (PySequence_Check(sequence)) {
+	n = PySequence_Length(sequence);
+	if (n > 0) {
+	    int i;
+	    
+	    points = g_new(gdouble, n);
+	    for (i = 0; i < n; ++i) {
+		PyObject *item, *value;
+
+		item = PySequence_GetItem(sequence, i);
+		if (PyFloat_Check(item)) {
+		    points[i] = PyFloat_AS_DOUBLE(item);
+		} else if (PyNumber_Check(item)
+			   && (value = PyNumber_Float(item))) {
+		    points[i] = PyFloat_AS_DOUBLE(value);
+		    Py_DECREF(value);
+		} else {
+#if 0
+		    PyErr_SetString(PyExc_TypeError,
+				    "sequence items must be numbers");
+#endif
+		    Py_DECREF(item);
+		    g_free(points);
+		    points = NULL;
+		    return -1;
+		}
+		Py_DECREF(item);
+	    }
+	}
+    } 
+#if 0
+    else if (sequence != Py_None) {
+	PyErr_SetString(PyExc_TypeError, "argument must be sequence or None");
+	return -1;
+    }
+#endif
+    *out_points = points;
+    return n;
+}
+/* ---------------------------------------------------------------------- */
 %%
 modulename gtkextra
 %%
@@ -83,22 +185,62 @@ override-attr GtkPlotCanvasChild.data
 static PyObject *
 _wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
 {
-    // FIXME
-    switch (pyg_pointer_get(self, GtkPlotCanvasChild)->type) {
+    switch (pyg_boxed_get(self, GtkPlotCanvasChild)->type) {
     case GTK_PLOT_CANVAS_NONE:
 	Py_INCREF(Py_None);
 	return Py_None;
-#if 0
+
+    case GTK_PLOT_CANVAS_TEXT:
+#if 0 // When boxed correctly
+	return pyg_boxed_new(GTK_TYPE_PLOT_TEXT, pyg_boxed_get(self, GtkPlotCanvasChild)->data, TRUE, TRUE);
+#else // Might also be ok when boxed correctly.
+	return pyg_boxed_new(GTK_TYPE_PLOT_TEXT, pyg_boxed_get(self, GtkPlotCanvasChild)->data, FALSE, FALSE);
+#endif
     case GTK_PLOT_CANVAS_PLOT:
     case GTK_PLOT_CANVAS_DATA:
     case GTK_PLOT_CANVAS_LEGENDS:
-    case GTK_PLOT_CANVAS_TEXT:
-	return pygobject_new((GObject *)(pyg_pointer_get(self, GtkPlotCanvasChild)->data));
-#endif
     default:
 	return PyCObject_FromVoidPtr(pyg_pointer_get(self, GtkPlotCanvasChild)->data, NULL);
     }
 }
+
+%%
+override gtk_plot_data_set_points
+static PyObject *
+_wrap_gtk_plot_data_set_points(PyGObject *self, PyObject *args, PyObject *kwargs)
+{
+    static char *kwlist[] = { "x", "y", "dx", "dy", NULL };
+    gdouble *x, *y, *dx, *dy = NULL;
+    PyObject *py_x, *py_y, *py_dx, *py_dy= NULL;
+    int nx, ny, ndx, ndy;
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|OOOO:GtkPlotData.set_points", kwlist,
+				     &py_x, &py_y, &py_dx, &py_dy ))
+        return NULL;
+
+    nx = pygtkextra_get_points( py_x, &x );
+    ny = pygtkextra_get_points( py_y, &y );
+    ndx = pygtkextra_get_points( py_dx, &dx );
+    ndy = pygtkextra_get_points( py_dy, &dy );
+    
+    printf("%d %d %d %d\n", nx, ny, ndx, ndy);
+
+    gtk_plot_data_set_points(GTK_PLOT_DATA(self->obj), x, y, dx, dy, nx);
+    gtk_plot_data_set_points(GTK_PLOT_DATA(self->obj), x, y, dx, dy, nx);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+
+
+}
+#if 0
+void 		gtk_plot_data_set_points212	(GtkPlotData *data,
+						 gdouble *x, gdouble *y,
+						 gdouble *dx, gdouble *dy,
+                                                 gint num_points);
+#endif
+
+
 
 %%
 ignore-glob *_get_type

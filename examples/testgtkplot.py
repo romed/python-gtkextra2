@@ -8,6 +8,8 @@ class Application(gtk.Window):
     scale = 1.0
     
     def __init__(self):
+        self.hack = []
+        
         self.nlayers = 0
         self.buttons = []
         self.plots = []
@@ -46,9 +48,7 @@ class Application(gtk.Window):
         plot.y0_set_visible(gtk.TRUE)
         plot.axis_set_labels_suffix(gtkextra.PLOT_AXIS_LEFT, "%");
         canvas.add_plot(plot, 0.15, 0.06)
-        #self.build_example1(plot)
-
-        
+        self.build_example1(plot)
 
         plot = self.new_layer(canvas)
         plot.set_background(light_yellow)
@@ -62,10 +62,7 @@ class Application(gtk.Window):
         plot.set_legends_border(gtkextra.PLOT_BORDER_SHADOW, 3)
         plot.legends_move(0.58, 0.05)
         canvas.add_plot(plot, 0.15, 0.4)
-        #self.build_example2(plot)
-
-        #self.show_all()
-        #return
+        self.build_example2(plot)
 
         canvas.connect("move_item", self.move_item)
         canvas.connect("select_item", self.select_item)
@@ -80,8 +77,8 @@ class Application(gtk.Window):
                                 gtk.TRUE, gtk.JUSTIFY_CENTER,
                                 "Format text mixing \\Bbold \\N\\i, italics, "\
                                 "\\ggreek \\4\\N and \\+different fonts")
-        #This is harder since "data" can be different types.  Think about this...
-        #child.data.set_border(gtkextra.PLOT_BORDER_SHADOW, 2, 0, 2)
+
+        child.data.set_border(gtkextra.PLOT_BORDER_SHADOW, 2, 0, 2)
 
         self.show_all()
 
@@ -176,32 +173,35 @@ class Application(gtk.Window):
         dy2 = [.1, .1, .1, .1, .1, .1]
 
         colormap = self.get_colormap()
-        red = colormap.alloc("red")
-        black = colormap.alloc("black")
-        blue = colormap.alloc("blue")
+        red = colormap.alloc_color("red")
+        black = colormap.alloc_color("black")
+        blue = colormap.alloc_color("blue")
 
-        data = GtkPlotData()
+        data = gtkextra.PlotData()
         plot.add_data(data)
         data.set_points(px1, py1, dx1, dy1)
-        data.set_symbol(gtkextra.PLOT_SYMBOL_DIAMOND, gtkextra.PLOT_SYMBOL_EMPTY, 10, 2, red)
-        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 1, red)
+        data.set_symbol(gtkextra.PLOT_SYMBOL_DIAMOND, gtkextra.PLOT_SYMBOL_EMPTY, 10, 2, red, red)
+        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 1, red)
         data.set_connector(gtkextra.PLOT_CONNECT_SPLINE)
         data.show_yerrbars()
         data.set_legend("Spline + EY")
+        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
 
-        data = GtkPlotData()
+
+        data = gtkextra.PlotData()
         plot.add_data(data)
         data.set_points(px2, py2, dx2, dy2)
-        data.set_symbol(gtkextra.PLOT_SYMBOL_SQUARE, gtkextra.PLOT_SYMBOL_OPAQUE, 8, 2, black)
-        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 4, red)
+        data.set_symbol(gtkextra.PLOT_SYMBOL_SQUARE, gtkextra.PLOT_SYMBOL_OPAQUE, 8, 2, black, black)
+        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 4, red)
         data.set_connector(gtkextra.PLOT_CONNECT_STRAIGHT)
-        data.set_x_attributes(gtkextra.PLOT_LINE_SOLID, 0, black)
-        data.set_y_attributes(gtkextra.PLOT_LINE_SOLID, 0, black)
+        data.set_x_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, black)
+        data.set_y_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 0, black)
         data.set_legend("Line + Symbol")
+        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
         
-        data = plot.add_function(self.function)
-        data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, blue)
-        data.set_legend("Function Plot")
+        #data = plot.add_function(self.function)
+        #data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, blue)
+        #data.set_legend("Function Plot")
 
     def build_example2(self, plot):
         px2 = [.1, .2, .3, .4, .5, .6, .7, .8]
@@ -209,21 +209,22 @@ class Application(gtk.Window):
         dx2 = [.1, .1, .1, .1, .1, .1, .1, .1]
 
         colormap = self.get_colormap()
-        dark_green = colormap.alloc("dark green")
-        blue = colormap.alloc("blue")
+        dark_green = colormap.alloc_color("dark green")
+        blue = colormap.alloc_color("blue")
         
-        data = plot.add_function(self.gaussian)
-        data.set_line_attributes(gtkextra.PLOT_LINE_DASHED, 2, dark_green)
-        data.set_legend("Gaussian")
+        #data = plot.add_function(self.gaussian)
+        #data.set_line_attributes(gtkextra.PLOT_LINE_DASHED, 2, dark_green)
+        #data.set_legend("Gaussian")
 
-        data = GtkPlotBar(gtkextra.ORIENTATION_VERTICAL)
+        data = gtkextra.PlotBar(gtk.ORIENTATION_VERTICAL)
         plot.add_data(data)
         data.set_points(px2, py2, dx2)
-        data.set_symbol(gtkextra.PLOT_SYMBOL_NONE, gtkextra.PLOT_SYMBOL_OPAQUE, 10, 2, blue)
-        data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 1, blue)
+        data.set_symbol(gtkextra.PLOT_SYMBOL_NONE, gtkextra.PLOT_SYMBOL_OPAQUE, 10, 2, blue, blue)
+        data.set_line_attributes(gtkextra.PLOT_LINE_NONE, 0, 0, 1, blue)
         data.set_connector(gtkextra.PLOT_CONNECT_NONE)
         data.set_legend("V Bars")
-        
+        self.hack.append(data) #FIXME: Crashes without holding this. I think plot.add_data() should do a ref().
+
     def function(self, x, *extra):
         try:
             return -0.5 + 0.3 * sin(3.0 * x) * sin(50.0 * x)
@@ -238,7 +239,8 @@ class Application(gtk.Window):
     def quit(self, *args):
         gtk.main_quit()
 
-if __name__ == '__main__':		
+if __name__ == '__main__':
+    raw_input("attach now")
     app = Application()
     gtk.main()
 

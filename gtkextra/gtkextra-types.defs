@@ -235,12 +235,22 @@
     )
 )
 
-(define-pointer PlotCanvasChild
+; Lot more to do from gtkplot.h. Also compare fields to accessor functions.
+; Also gtkextra code needs all of those boxed fixed up with types and macros.
+
+(define-boxed PlotText
+  (in-module "Gtk")
+  (c-name "GtkPlotText")
+  (gtype-id "GTK_TYPE_PLOT_TEXT")
+)
+
+(define-boxed PlotCanvasChild
   (in-module "Gtk")
   (c-name "GtkPlotCanvasChild")
   (gtype-id "GTK_TYPE_PLOT_CANVAS_CHILD")
   (fields
     '("gint" "data")
+    '("gint" "type")
   )
 )
 

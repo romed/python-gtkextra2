@@ -3356,7 +3356,7 @@
 
 (define-method draw_text
   (of-object "GtkPlot")
-  (c-name "gtk_plot_draw_text")
+  (c-name "gtk_plot_draw_text_PY")
   (return-type "none")
   (parameters
     '("GtkPlotText" "text")
