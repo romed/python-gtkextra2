@@ -287,6 +287,9 @@ pygtkextra_data_from_pyobject(PyObject **out_obj, PyObject *in_obj, gint *p_n, g
     result = PyEval_CallObject(pygtkextra_data_from_pyobject_callback, arglist);
     Py_DECREF(arglist);
 
+    if (PyErr_Occurred())
+	return -1;
+
     if ( !result || !PyTuple_Check(result) || PyObject_Length(result) != 3) {
 	PyErr_SetString(PyExc_TypeError, "callback must return (in_obj, buffer, buffer_len)");
 	return -1;
