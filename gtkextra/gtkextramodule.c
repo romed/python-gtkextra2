@@ -14,8 +14,6 @@ void pygtkextra_add_constants(PyObject *module, const gchar *strip_prefix);
 
 extern PyMethodDef pygtkextra_functions[];
 
-PyTypeObject *_PyArray_Type;
-
 DL_EXPORT(void)
 init_gtkextra(void)
 {
@@ -45,17 +43,6 @@ init_gtkextra(void)
     PyModule_AddIntConstant(m, "ICON_LIST_ICON", GTK_ICON_LIST_ICON);
     PyModule_AddIntConstant(m, "ICON_LIST_TEXT_RIGHT", GTK_ICON_LIST_TEXT_RIGHT);
     PyModule_AddIntConstant(m, "ICON_LIST_TEXT_BELOW", GTK_ICON_LIST_TEXT_BELOW);
-
-
-    if ((module = PyImport_ImportModule("array")) != NULL) {
-        PyObject *moddict = PyModule_GetDict(module);
-        _PyArray_Type = (PyTypeObject *)PyDict_GetItemString(moddict, "ArrayType");
-    } 
-    else {
-        Py_FatalError("could not import array");
-        return;
-    }
-    
 
     if (PyErr_Occurred())
         Py_FatalError("could not initialise module gtkextra._gtkextra");

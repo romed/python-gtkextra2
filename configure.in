@@ -3,8 +3,8 @@ AC_PREREQ(2.52)
 
 dnl the python-gtkextra version number
 m4_define(python_gtkextra_major_version, 1)
-m4_define(python_gtkextra_minor_version, 99)
-m4_define(python_gtkextra_micro_version, 8)
+m4_define(python_gtkextra_minor_version, 1)
+m4_define(python_gtkextra_micro_version, 0)
 m4_define(python_gtkextra_version, python_gtkextra_major_version.python_gtkextra_minor_version.python_gtkextra_micro_version)
 
 dnl versions of packages we require ...
