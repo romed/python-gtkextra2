@@ -560,10 +560,45 @@ _wrap_gtk_plot_data_set_points(PyGObject *self, PyObject *args, PyObject *kwargs
 }
 %%
 override-attr GtkPlotData.x
+static int
+pygtkextra_plot_data_set(PyGObject *self, PyObject *value,
+			 const char *key,
+			 void (*func) (GtkPlotData *plot_data, gdouble *pd))
+{
+    gdouble *pd = NULL;
+    PyObject *py_out = NULL;
+    int num_points;
+
+    if ( pygtkextra_data_from_pyobject( &py_out, value, &num_points, &pd) < 0 ) {
+	Py_XDECREF(py_out);
+	return -1;
+    }
+
+    if ( num_points != gtk_plot_data_get_numpoints(GTK_PLOT_DATA(self->obj) ) ) {
+	PyErr_SetString(PyExc_TypeError, "use set_points() to change size");
+	return -1;
+    }
+
+    if ( pygtkextra_set_data(self, key, py_out) ) {
+	Py_XDECREF(py_out);
+	return -1;
+    }
+    Py_DECREF(py_out);
+
+    (*func)(GTK_PLOT_DATA(self->obj), NULL);
+    (*func)(GTK_PLOT_DATA(self->obj), pd);
+
+    return 0;
+}
 static PyObject *
 _wrap_gtk_plot_data__get_x(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "x");
+}
+static int
+_wrap_gtk_plot_data__set_x(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "x", gtk_plot_data_set_x);
 }
 %%
 override-attr GtkPlotData.dx
@@ -572,12 +607,22 @@ _wrap_gtk_plot_data__get_dx(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "dx");
 }
+static int
+_wrap_gtk_plot_data__set_dx(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "dx", gtk_plot_data_set_dx);
+}
 %%
 override-attr GtkPlotData.y
 static PyObject *
 _wrap_gtk_plot_data__get_y(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "y");
+}
+static int
+_wrap_gtk_plot_data__set_y(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "y", gtk_plot_data_set_y);
 }
 %%
 override-attr GtkPlotData.dy
@@ -586,12 +631,22 @@ _wrap_gtk_plot_data__get_dy(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "dy");
 }
+static int
+_wrap_gtk_plot_data__set_dy(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "dy", gtk_plot_data_set_dy);
+}
 %%
 override-attr GtkPlotData.z
 static PyObject *
 _wrap_gtk_plot_data__get_z(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "z");
+}
+static int
+_wrap_gtk_plot_data__set_z(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "z", gtk_plot_data_set_z);
 }
 %%
 override-attr GtkPlotData.dz
@@ -600,6 +655,11 @@ _wrap_gtk_plot_data__get_dz(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "dz");
 }
+static int
+_wrap_gtk_plot_data__set_dz(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "dz", gtk_plot_data_set_dz);
+}
 %%
 override-attr GtkPlotData.a
 static PyObject *
@@ -607,12 +667,22 @@ _wrap_gtk_plot_data__get_a(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "a");
 }
+static int
+_wrap_gtk_plot_data__set_a(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "a", gtk_plot_data_set_a);
+}
 %%
 override-attr GtkPlotData.da
 static PyObject *
 _wrap_gtk_plot_data__get_da(PyGObject *self, void *closure)
 {
     return pygtkextra_get_data(self, "da");
+}
+static int
+_wrap_gtk_plot_data__set_da(PyGObject *self, PyObject *value, void *closure)
+{
+    return pygtkextra_plot_data_set(self, value, "da", gtk_plot_data_set_da);
 }
 %%
 ignore

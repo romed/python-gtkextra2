@@ -1,4 +1,6 @@
 pygtkextradir = $(pythondir)/gtkextra
+pygtkextraexecdir = $(pyexecdir)/gtkextra
+
 pygtkextra_PYTHON = \
   __init__.py \
   _config.py
@@ -6,7 +8,6 @@ pygtkextra_PYTHON = \
 EXTRA_DIST = \
   mycodegen.py
 
-pygtkextraexecdir = $(pyexecdir)/gtkextra
 
 # FIXME: Do we want to drop files in the pygtk directory or in our own pkg directory
 defsdir = $(PYGTK_DEFSDIR)
