@@ -9,7 +9,6 @@ if test -z $1; then
 	exit 0
 fi
 
-#export PYTHONPATH=../:../gtkextra/:$PYTHONPATH
 export PYTHONPATH=../:$PYTHONPATH
 
 if test -z $DEBUG; then
