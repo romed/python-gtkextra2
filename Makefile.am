@@ -14,6 +14,7 @@ EXTRA_DIST += \
   python-gtkextra.spec.in \
   python-gtkextra.pc.in \
   examples/test.sh \
+  examples/common.py \
   examples/icons.py \
   examples/pixmaps.py \
   examples/testboxes.py \

@@ -12,9 +12,10 @@ fi
 export PYTHONPATH=../:$PYTHONPATH
 
 if test -z $DEBUG; then
-    python -c "execfile('$1')"
+    python -c "import common;execfile('$1')"
 else
     python -c "\
+import common
 import os
 raw_input('Attach gdb on %d. Press return to begin \"$1\".' % os.getpid())
 del os
