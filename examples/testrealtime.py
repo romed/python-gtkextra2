@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
+import gobject
 import gtk, gtkextra
 from random import randint
 
 class Application(gtk.Window):
 
     def __init__(self):
-        gtk.Window.__init__(self)
+        #gtk.Window.__init__(self)
+        self.__gobject_init__()
         self.set_title("GtkPlot Real Time Demo")
         self.set_size_request(550, 600)
         self.connect("destroy", self.quit)
@@ -30,38 +32,54 @@ class Application(gtk.Window):
         plot.resize(width=0.65, height=0.45)
         plot.set_background(light_yellow)
         plot.legends_set_attributes(None, 0, None, white)
-        plot.set_range(0.0, 20.0, 0.0, 1.0)
-        plot.axis_set_ticks(gtkextra.PLOT_AXIS_X, 2.0, 1)
-        plot.axis_set_ticks(gtkextra.PLOT_AXIS_Y, 0.1, 1)
-        plot.axis_set_labels_style(gtkextra.PLOT_AXIS_TOP, gtkextra.PLOT_LABEL_FLOAT, 0)
-        plot.axis_set_labels_style(gtkextra.PLOT_AXIS_BOTTOM, gtkextra.PLOT_LABEL_FLOAT, 0)
-        plot.axis_set_visible(gtkextra.PLOT_AXIS_TOP, gtk.TRUE)
-        plot.axis_set_visible(gtkextra.PLOT_AXIS_RIGHT, gtk.TRUE)
-        plot.grids_set_visible(gtk.TRUE, gtk.TRUE, gtk.TRUE, gtk.TRUE)
-        plot.axis_hide_title(gtkextra.PLOT_AXIS_TOP)
-        plot.axis_hide_title(gtkextra.PLOT_AXIS_RIGHT)
-        plot.axis_set_title(gtkextra.PLOT_AXIS_LEFT, "Intensity")
-        plot.axis_set_title(gtkextra.PLOT_AXIS_BOTTOM, "Time (s)")
         plot.set_legends_border(gtkextra.PLOT_BORDER_SHADOW, 3)
         plot.legends_move(0.60, 0.10)
-        canvas.add_plot(plot, 0.15, 0.15)
 
-        #canvas.put_text(0.45, 0.05, "Times-BoldItalic", 20, 0, None, None,
-        #canvas.put_text(0.45, 0.05, "Courier-Bold", 20, 0, None, None, #OK
-        canvas.put_text(0.45, 0.05, "Helvetica", 20, 0, None, None, #OK
-                        gtk.TRUE, gtk.JUSTIFY_CENTER, "Real Time Demo")
+        plot.set_range(0.0, 20.0, 0.0, 1.0)
+        plot.set_ticks(gtkextra.PLOT_AXIS_X, 2, 1)
+        plot.set_ticks(gtkextra.PLOT_AXIS_Y, .1, 1)
+
+        axis_left = plot.get_axis(gtkextra.PLOT_AXIS_LEFT)
+        axis_right = plot.get_axis(gtkextra.PLOT_AXIS_RIGHT)
+        axis_top = plot.get_axis(gtkextra.PLOT_AXIS_TOP)
+        axis_bottom = plot.get_axis(gtkextra.PLOT_AXIS_BOTTOM)
+        axis_x = plot.get_axis(gtkextra.PLOT_AXIS_X)
+        axis_y = plot.get_axis(gtkextra.PLOT_AXIS_Y)
+
+        axis_top.set_labels_style(gtkextra.PLOT_LABEL_FLOAT, 0)
+        axis_bottom.set_labels_style(gtkextra.PLOT_LABEL_FLOAT, 0)
+        
+        axis_top.set_visible(True)
+        axis_right.set_visible(True)
+        plot.grids_set_visible(True, True, True, True)
+        
+        axis_top.hide_title()
+        axis_right.hide_title()
+        axis_left.set_title("Intensity")
+        axis_bottom.set_title("Time (s)")
+
+        child = gtkextra.PlotCanvasPlot(plot)
+        canvas.put_child(child, .15, .15, .80, .65);
+        plot.show()
+
+        child = gtkextra.PlotCanvasText("Times-BoldItalic", 20, 0, None, None, True, gtk.JUSTIFY_CENTER, "Real Time Demo")
+        canvas.put_child(child, .45, .05, 0., 0.)
 
         data = gtkextra.PlotData()
         plot.add_data(data)
+        data.show()
         data.set_legend("Random pulse")
         data.set_symbol(gtkextra.PLOT_SYMBOL_DIAMOND, gtkextra.PLOT_SYMBOL_OPAQUE, 10, 2, red, red)
         data.set_line_attributes(gtkextra.PLOT_LINE_SOLID, 0, 0, 1, red)
         
-        plot.clip_data(gtk.TRUE)
+        plot.clip_data(True)
+
+        canvas.paint()
+        canvas.refresh()
 
         self.show_all()
 
-        gtk.timeout_add(1000, self.update, canvas, plot, data)
+        gobject.timeout_add(100, self.update, canvas, plot, data)
 
     def update(self, canvas, plot, data, *args):
         y = randint(0, 9) / 10.0
@@ -89,7 +107,7 @@ class Application(gtk.Window):
         canvas.paint()
         canvas.refresh()
 
-        return gtk.TRUE
+        return True
         
     def button_press_handler(self, canvas, event, *extra):
         (x, y) = canvas.get_pointer()

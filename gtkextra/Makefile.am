@@ -29,7 +29,8 @@ COMMONDEFS =
 # gtkextra module
 pygtkextraexec_LTLIBRARIES = _gtkextramodule.la
 _gtkextramodule_la_CFLAGS = $(PYGTK_CFLAGS) $(GTK_CFLAGS) $(GTKEXTRA_CFLAGS)
-_gtkextramodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtkextra
+#_gtkextramodule_la_LDFLAGS = -module -avoid-version -export-symbols-regex init_gtkextra
+_gtkextramodule_la_LDFLAGS = -module -avoid-version
 _gtkextramodule_la_LIBADD =  $(GTKEXTRA_LIBS) $(PYGTK_LIBS) $(GTK_LIBS)
 _gtkextramodule_la_SOURCES = gtkextramodule.c
 gtkextra.c: $(COMMONDEFS) gtkextra-addons.defs gtkextra-types.defs gtkextra.override

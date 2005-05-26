@@ -23,6 +23,8 @@ headers
  * Boston, MA 02111-1307, USA.
  */
 
+//#define _DEBUG
+
 #define NO_IMPORT_PYGOBJECT
 #include <pygobject.h>
 #include <pygtk/pygtk.h>
@@ -41,42 +43,18 @@ static gchar * pygtkextra_keys[] = {
     "x", "y", "z", "a", "dx", "dy", "dz", "da"
 };
 
-/*
-  This exists in pygtk/gtk/gtk-types.c.  It is not static there, but 
-  is exported for our use.  Especially since dlopen is now not done
-  with RTLD_GLOBAL flags by default. Might wish to ask James if it
-  could be published or if there is another way.
-*/
-
-static gboolean
-pygdk_rectangle_from_pyobject(PyObject *object, GdkRectangle *rectangle)
-{
-    g_return_val_if_fail(rectangle != NULL, FALSE);
-
-    if (pyg_boxed_check(object, GDK_TYPE_RECTANGLE)) {
-	*rectangle = *pyg_boxed_get(object, GdkRectangle);
-	return TRUE;
-    }
-    if (PyArg_ParseTuple(object, "iiii", &rectangle->x, &rectangle->y,
-			 &rectangle->width, &rectangle->height)) {
-	return TRUE;
-    }
-    PyErr_Clear();
-    PyErr_SetString(PyExc_TypeError, "could not convert to GdkRectangle");
-    return FALSE;
-}
-
 /* ----------------------------------------------------------------------
  Fixup boo-boo's or ommissions.  Probably should be fixed in gtkextra.
 */
 #define GTK_ICON_FILE_SEL GTK_ICON_FILESEL
 #define GTK_TYPE_ICON_FILE_SEL (gtk_icon_file_selection_get_type())
-#define GTK_TYPE_COMBO_BOX (gtk_combobox_get_type())
+#define GTK_TYPE_COMBO_BUTTON (gtk_combo_button_get_type())
 #define GTK_TYPE_COLOR_COMBO (gtk_color_combo_get_type())
 #define GTK_TYPE_BORDER_COMBO (gtk_border_combo_get_type())
 #define GTK_TYPE_FONT_COMBO (gtk_font_combo_get_type())
 #define GTK_TYPE_PLOT3_D (gtk_plot3d_get_type())
 #define GTK_TYPE_TOGGLE_COMBO (gtk_toggle_combo_get_type())
+#define GTK_TYPE_PLOT_CANDLE (gtk_plot_candle_get_type())
 
 /* Hack boxed types. Just enough to let code generator compile. Not correct!
    These and lots more need to be fixed in gtkextra code.
@@ -251,9 +229,6 @@ gtk_plot_dt_add_node_PY (GtkPlotDT *data, GtkPlotDTnode *node)
 
 /* This one is probably an "error" in h2def.py */
 #define GTK_PLOT3_D GTK_PLOT3D
-
-guint16 gtk_plot_canvas_set_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_SET_FLAGS(canvas, flags); }
-guint16 gtk_plot_canvas_unset_flags(GtkPlotCanvas *canvas, guint16 flags) { return GTK_PLOT_CANVAS_UNSET_FLAGS(canvas, flags); }
 
 /* cpp abuse */
 #define _GET_ONE_DOUBLE(_f, _c)  static PyObject * \
@@ -649,54 +624,6 @@ _wrap_gtk_psfont_get_char_size(PyObject *self)
     return NULL;
 }
 %%
-override-attr GtkPlotCanvasChild.data
-static PyObject *
-_wrap_gtk_plot_canvas_child__get_data(PyObject *self, void *closure)
-{
-    /* 
-       The GtkPlotCanvasType's are:
-
-       GTK_PLOT_CANVAS_NONE
-       GTK_PLOT_CANVAS_PLOT
-       GTK_PLOT_CANVAS_AXIS
-       GTK_PLOT_CANVAS_LEGENDS
-       GTK_PLOT_CANVAS_TITLE
-       GTK_PLOT_CANVAS_TEXT
-       GTK_PLOT_CANVAS_DATA
-       GTK_PLOT_CANVAS_LINE
-       GTK_PLOT_CANVAS_RECTANGLE
-       GTK_PLOT_CANVAS_ELLIPSE
-       GTK_PLOT_CANVAS_PIXMAP
-       GTK_PLOT_CANVAS_MARKER
-       GTK_PLOT_CANVAS_CUSTOM
-    */
-    switch (pyg_boxed_get(self, GtkPlotCanvasChild)->type) {
-    case GTK_PLOT_CANVAS_NONE:
-	Py_INCREF(Py_None);
-	return Py_None;
-
-    case GTK_PLOT_CANVAS_TEXT:
-#if 0 // When boxed correctly
-	return pyg_boxed_new(GTK_TYPE_PLOT_TEXT, pyg_boxed_get(self, GtkPlotCanvasChild)->data, TRUE, TRUE);
-#else // Might also be ok when boxed correctly.
-	return pyg_boxed_new(GTK_TYPE_PLOT_TEXT, pyg_boxed_get(self, GtkPlotCanvasChild)->data, FALSE, FALSE);
-#endif
-
-    case GTK_PLOT_CANVAS_PLOT:
-    case GTK_PLOT_CANVAS_AXIS:
-    case GTK_PLOT_CANVAS_LEGENDS:
-    case GTK_PLOT_CANVAS_TITLE:
-    case GTK_PLOT_CANVAS_DATA:
-    case GTK_PLOT_CANVAS_LINE:
-    case GTK_PLOT_CANVAS_RECTANGLE:
-    case GTK_PLOT_CANVAS_ELLIPSE:
-    case GTK_PLOT_CANVAS_PIXMAP:
-    case GTK_PLOT_CANVAS_MARKER:
-    default:
-	return PyCObject_FromVoidPtr(pyg_pointer_get(self, GtkPlotCanvasChild)->data, NULL);
-    }
-}
-%%
 override gtk_plot_data_new kwargs
 static int
 _wrap_gtk_plot_data_new(PyGObject *self, PyObject *args, PyObject *kwargs)
@@ -852,7 +779,7 @@ override-attr GtkPlotData.x
 static int
 pygtkextra_plot_data_set(PyGObject *self, PyObject *value,
 			 const char *key,
-			 void (*func) (GtkPlotData *plot_data, gdouble *pd))
+			 GtkPlotArray * (*func) (GtkPlotData *plot_data, gdouble *pd))
 {
     gdouble *pd = NULL;
     PyObject *py_out = NULL;
@@ -1004,15 +931,15 @@ _wrap_gtk_plot_data_get_point(PyGObject *self, PyObject *args)
     if (! (py_ret = PyDict_New()) )
 	return NULL;
 
-    if ( (plot_data -> x && pygtkextra_dict_set_item_double(py_ret, "x", x))
-	 || (plot_data -> y && pygtkextra_dict_set_item_double(py_ret, "y", y))
-	 || (plot_data -> z && pygtkextra_dict_set_item_double(py_ret, "z", z))
-	 || (plot_data -> a && pygtkextra_dict_set_item_double(py_ret, "a", a))
-	 || (plot_data -> dx && pygtkextra_dict_set_item_double(py_ret, "dx", dx))
-	 || (plot_data -> dy && pygtkextra_dict_set_item_double(py_ret, "dy", dy))
-	 || (plot_data -> dz && pygtkextra_dict_set_item_double(py_ret, "dz", dz))
-	 || (plot_data -> da && pygtkextra_dict_set_item_double(py_ret, "da", da))
-	 || (plot_data -> labels && pygtkextra_dict_set_item_string(py_ret, "label", label)) ) {
+    if ( (gtk_plot_data_find_dimension(plot_data, "x") && pygtkextra_dict_set_item_double(py_ret, "x", x))
+	 || (gtk_plot_data_find_dimension(plot_data, "y") && pygtkextra_dict_set_item_double(py_ret, "y", y))
+	 || (gtk_plot_data_find_dimension(plot_data, "z") && pygtkextra_dict_set_item_double(py_ret, "z", z))
+	 || (gtk_plot_data_find_dimension(plot_data, "a") && pygtkextra_dict_set_item_double(py_ret, "a", a))
+	 || (gtk_plot_data_find_dimension(plot_data, "dx") && pygtkextra_dict_set_item_double(py_ret, "dx", dx))
+	 || (gtk_plot_data_find_dimension(plot_data, "dy") && pygtkextra_dict_set_item_double(py_ret, "dy", dy))
+	 || (gtk_plot_data_find_dimension(plot_data, "dz") && pygtkextra_dict_set_item_double(py_ret, "dz", dz))
+	 || (gtk_plot_data_find_dimension(plot_data, "da") && pygtkextra_dict_set_item_double(py_ret, "da", da))
+	 || (gtk_plot_data_find_dimension(plot_data, "labels") && pygtkextra_dict_set_item_string(py_ret, "label", label)) ) {
 	Py_DECREF(py_ret);
 	return NULL;
     }
@@ -1426,20 +1353,13 @@ _GET_TWO_DOUBLE(gtk_plot_get_position, GTK_PLOT)
 override gtk_plot_get_size noargs
 _GET_TWO_DOUBLE(gtk_plot_get_size, GTK_PLOT)
 %%
-override gtk_plot_axis_get_attributes kwargs
+override gtk_plot_axis_get_attributes noargs
 static PyObject *
-_wrap_gtk_plot_axis_get_attributes(PyGObject *self, PyObject *args, PyObject *kwargs)
+_wrap_gtk_plot_axis_get_attributes(PyGObject *self)
 {
-    static char *kwlist[] = { "axis", NULL };
-    PyObject *py_axis = NULL;
     gfloat width;
     GdkColor color = {0, };
-    GtkPlotAxisPos axis;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O:GtkPlot.axis_get_attributes", kwlist, &py_axis))
-        return NULL;
-    if (pyg_enum_get_value(GTK_TYPE_PLOT_AXIS_POS, py_axis, (gint *)&axis))
-        return NULL;
-    gtk_plot_axis_get_attributes(GTK_PLOT(self->obj), axis, &width, &color);
+    gtk_plot_axis_get_attributes(GTK_PLOT_AXIS(self->obj), &width, &color);
     return Py_BuildValue("(dN)", (double)width, pyg_boxed_new(GDK_TYPE_COLOR, &color, TRUE, TRUE));
 }
 %%

@@ -13,5 +13,4 @@ import codegen.codegen
 
 matcher.register('GdkWChar', matcher.get('gint32'))
 
-codegen.codegen.main()
-
+codegen.codegen.main(sys.argv)

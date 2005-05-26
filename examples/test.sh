@@ -1,4 +1,6 @@
 #!/bin/sh
+PYTHON=${PYTHON:-python}
+
 [ $1 = "-gdb" ] && DEBUG=1 && shift
 
 if test -z $1; then
@@ -12,10 +14,21 @@ fi
 export PYTHONPATH=../:$PYTHONPATH
 
 if test -z $DEBUG; then
-    python -c "import common;execfile('$1')"
+    $PYTHON -c "\
+try:
+    import common;
+    print 'Using:', common.__file__
+except ImportError:
+    pass
+execfile('$1')
+"
 else
-    python -c "\
-import common
+    $PYTHON -c "\
+try:
+    import common;
+    print 'Using:', common.__file__
+except ImportError:
+    pass
 import os
 raw_input('Attach gdb on %d. Press return to begin \"$1\".' % os.getpid())
 del os

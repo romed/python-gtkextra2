@@ -27,11 +27,11 @@
   (gtype-id "GTK_TYPE_CHECK_ITEM")
 )
 
-(define-object ComboBox
+(define-object ComboButton
   (in-module "Gtk")
   (parent "GtkHBox")
-  (c-name "GtkComboBox")
-  (gtype-id "GTK_TYPE_COMBO_BOX")
+  (c-name "GtkComboButton")
+  (gtype-id "GTK_TYPE_COMBO_BUTTON")
   (fields
     '("GtkWidget*" "button")
     '("GtkWidget*" "arrow")
@@ -43,14 +43,14 @@
 
 (define-object ColorCombo
   (in-module "Gtk")
-  (parent "GtkComboBox")
+  (parent "GtkComboButton")
   (c-name "GtkColorCombo")
   (gtype-id "GTK_TYPE_COLOR_COMBO")
 )
 
 (define-object BorderCombo
   (in-module "Gtk")
-  (parent "GtkComboBox")
+  (parent "GtkComboButton")
   (c-name "GtkBorderCombo")
   (gtype-id "GTK_TYPE_BORDER_COMBO")
   (fields
@@ -105,6 +105,9 @@
     '("GtkWidget*" "dir_tree")
     '("GtkWidget*" "file_list")
     '("GtkWidget*" "history_combo")
+    '("GtkWidget*" "up_button")
+    '("GtkWidget*" "refresh_button")
+    '("GtkWidget*" "home_button")
     '("GtkWidget*" "file_entry")
     '("GtkWidget*" "filter_entry")
     '("GtkWidget*" "ok_button")
@@ -158,11 +161,20 @@
   )
 )
 
-(define-object Plot3D
+;new
+(define-object PlotArray
   (in-module "Gtk")
-  (parent "GtkPlot")
-  (c-name "GtkPlot3D")
-  (gtype-id "GTK_TYPE_PLOT3_D")
+  (parent "GObject")
+  (c-name "GtkPlotArray")
+  (gtype-id "GTK_TYPE_PLOT_ARRAY")
+)
+
+;new
+(define-object PlotArrayList
+  (in-module "Gtk")
+  (parent "GObject")
+  (c-name "GtkPlotArrayList")
+  (gtype-id "GTK_TYPE_PLOT_ARRAY_LIST")
 )
 
 (define-object PlotAxis
@@ -178,7 +190,6 @@
     '("gboolean" "title_visible")
     '("GtkPlotTicks" "ticks")
     '("GtkPlotOrientation" "orientation")
-    '("GtkPlotScale" "scale")
     '("GtkPlotLine" "line")
     '("GtkPlotLine" "major_grid")
     '("GtkPlotLine" "minor_grid")
@@ -196,7 +207,87 @@
     '("gint" "label_precision")
     '("gint" "label_style")
     '("gint" "label_mask")
+    '("GtkPlotArray*" "tick_labels")
   )
+)
+
+(define-object PlotCanvasChild
+  (in-module "Gtk")
+  (parent "GtkObject")
+  (c-name "GtkPlotCanvasChild")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_CHILD")
+  (fields
+    '("gdouble" "rx1")
+    '("gdouble" "rx2")
+    '("gdouble" "ry1")
+    '("gdouble" "ry2")
+    '("gint" "min_width")
+    '("gint" "min_height")
+    '("GdkRectangle" "allocation")
+    '("guint" "state")
+    '("GtkPlotCanvasType" "type")
+    '("GtkPlotCanvasFlag" "flags")
+    '("GtkPlotCanvasSelection" "selection")
+    '("GtkPlotCanvasSelectionMode" "mode")
+    '("gpointer" "data")
+  )
+)
+
+(define-object PlotCanvasEllipse
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasEllipse")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_ELLIPSE")
+)
+
+(define-object PlotCanvasLine
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasLine")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_LINE")
+)
+
+(define-object PlotCanvasPixmap
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasPixmap")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_PIXMAP")
+)
+
+(define-object PlotCanvasPlot
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasPlot")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_PLOT")
+  (fields
+   ("GtkPlotCanvasPlotPos" "pos")
+   ("gint" "datapoint")
+   ("guint" "flags")
+  )
+)
+
+(define-object PlotCanvasRectangle
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasRectangle")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_RECTANGLE")
+)
+
+(define-object PlotCanvasText
+  (in-module "Gtk")
+  (parent "GtkPlotCanvasChild")
+  (c-name "GtkPlotCanvasText")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_TEXT")
+  (fields
+   ("GtkPlotText" "text")
+  )
+)
+
+(define-object Plot3D
+  (in-module "Gtk")
+  (parent "GtkPlot")
+  (c-name "GtkPlot3D")
+  (gtype-id "GTK_TYPE_PLOT3_D")
 )
 
 (define-object PlotDT
@@ -221,6 +312,20 @@
    '("gdouble*" "da")
   )
   (gtype-id "GTK_TYPE_PLOT_DATA")
+)
+
+(define-object PlotCandle
+  (in-module "Gtk")
+  (parent "GtkPlotData")
+  (c-name "GtkPlotCandle")
+  (gtype-id "GTK_TYPE_PLOT_CANDLE")
+)
+
+(define-object PlotBubble
+  (in-module "Gtk")
+  (parent "GtkPlotData")
+  (c-name "GtkPlotBubble")
+  (gtype-id "GTK_TYPE_PLOT_BUBBLE")
 )
 
 (define-object PlotBox
@@ -302,12 +407,13 @@
 
 (define-object ToggleCombo
   (in-module "Gtk")
-  (parent "GtkComboBox")
+  (parent "GtkComboButton")
   (c-name "GtkToggleCombo")
   (gtype-id "GTK_TYPE_TOGGLE_COMBO")
 )
 
 ;; Boxed types
+;; These need to be fixed up in gtkextra code.
 
 (define-pointer PSFont
   (in-module "Gtk")
@@ -323,26 +429,6 @@
     '("gboolean" "bold")
     '("gboolean" "vertical")
     )
-)
-
-; Lot more to do from gtkplot.h. Also compare fields to accessor functions.
-; Also gtkextra code needs all of those boxed fixed up with types and macros.
-
-(define-boxed PlotLine
-  (in-module "Gtk")
-  (c-name "GtkPlotLine")
-  (gtype-id "GTK_TYPE_PLOT_LINE")
-  (fields
-    '("GtkPlotLineStyle" "line_style")
-    '("GdkCapStyle" "cap_style")
-    '("GdkJoinStyle" "join_style")
-  )
-)
-
-(define-boxed PlotMarker
-  (in-module "Gtk")
-  (c-name "GtkPlotMarker")
-  (gtype-id "GTK_TYPE_PLOT_MARKER")
 )
 
 (define-boxed PlotText
@@ -367,30 +453,87 @@
   )
 )
 
-(define-boxed PlotCanvasChild
+(define-boxed PlotLine
   (in-module "Gtk")
-  (c-name "GtkPlotCanvasChild")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_CHILD")
-
+  (c-name "GtkPlotLine")
+  (gtype-id "GTK_TYPE_PLOT_LINE")
   (fields
-    '("gdouble" "rx1")
-    '("gdouble" "rx2")
-    '("gdouble" "ry1")
-    '("gdouble" "ry2")
-    '("gint" "min_width")
-    '("gint" "min_height")
-    '("GdkRectangle" "allocation")
-    '("guint" "state")
-    '("GtkPlotCanvasType" "type")
-    '("GtkPlotCanvasFlag" "flags")
-    '("GtkPlotCanvasSelection" "selection")
-    '("GtkPlotCanvasSelectionMode" "mode")
-    '("gpointer" "data")
+    '("GtkPlotLineStyle" "line_style")
+    '("GdkCapStyle" "cap_style")
+    '("GdkJoinStyle" "join_style")
+    '("gfloat" "line_width")
+    '("GdkColor" "color")
   )
-  ;(fields
-  ;  '("gint" "data")
-  ;  '("gint" "type")
-  ;)
+)
+
+; (define-boxed PlotSymbol
+;   (in-module "Gtk")
+;   (c-name "GtkPlotSymbol")
+;   (gtype-id "GTK_TYPE_PLOT_SYMBOL")
+;   (fields
+;    '("GtkPlotSymbolType" "symbol_type")
+;    '("GtkPlotSymbolStyle" "symbol_style")
+;    '("gint" "size")
+;    '("GdkColor" "color")
+;    '("GtkPlotLine" "border")
+;   )
+; )
+
+; (define-boxed PlotVector
+;   (in-module "Gtk")
+;   (c-name "GtkPlotVector")
+;   (gtype-id "GTK_TYPE_PLOT_VECTOR")
+;   (fields
+;    '("gdouble" "x")
+;    '("gdouble" "y")
+;    '("gdouble" "z")
+;   )
+; )
+
+; (define-boxed PlotTick
+;   (in-module "Gtk")
+;   (c-name "GtkPlotTick")
+;   (gtype-id "GTK_TYPE_PLOT_TICK")
+;   (fields
+;    '("gdouble" "value")
+;    '("gbooleanb" "minor")
+;   )
+; )
+
+; (define-boxed PlotTicks
+;   (in-module "Gtk")
+;   (c-name "GtkPlotTicks")
+;   (gtype-id "GTK_TYPE_PLOT_TICKS")
+;   (fields
+;    ("gdouble" "min")
+;    ("gdouble" "max")
+;    ("GtkPlotScale" "scale")
+;    ("gint" "nmajorticks")
+;    ("gint" "nminorticks")
+;    ("gint" "nticks")
+;    ("gdouble" "step")
+;    ("gint" "nminor")
+;    ("gboolean" "apply_break")
+;    ("GtkPlotScale " "break_scale")
+;    ("gdouble" "break_step")
+;    ("gint" "break_nminor")
+;    ("gdouble" "break_min")
+;    ("gdouble" "break_max")
+;    ("gdouble" "break_position")
+;    ("GtkPlotTick*" "values")
+;    ("gboolean" "set_limits")
+;    ("gdouble" "begin") 
+;    ("gdouble" "end") 
+;   )
+; )
+
+(define-boxed PlotMarker
+  (in-module "Gtk")
+  (c-name "GtkPlotMarker")
+  (gtype-id "GTK_TYPE_PLOT_MARKER")
+  (fields
+   '("gint" "point")
+  )
 )
 
 (define-boxed IconListItem
@@ -512,19 +655,7 @@
   (values
     '("frozen" "GTK_PLOT_CANVAS_FROZEN")
     '("can-move" "GTK_PLOT_CANVAS_CAN_MOVE")
-    '("can-x-resize" "GTK_PLOT_CANVAS_CAN_X_RESIZE")
-    '("can-y-resize" "GTK_PLOT_CANVAS_CAN_Y_RESIZE")
-  )
-)
-
-(define-flags PlotCanvasArrow
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasArrow")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_ARROW")
-  (values
-    '("none" "GTK_PLOT_ARROW_NONE")
-    '("origin" "GTK_PLOT_ARROW_ORIGIN")
-    '("end" "GTK_PLOT_ARROW_END")
+    '("can-resize" "GTK_PLOT_CANVAS_CAN_RESIZE")
   )
 )
 
@@ -549,28 +680,6 @@
   )
 )
 
-(define-enum PlotCanvasType
-  (in-module "Gtk")
-  (c-name "GtkPlotCanvasType")
-  (gtype-id "GTK_TYPE_PLOT_CANVAS_TYPE")
-  (values
-    '("none" "GTK_PLOT_CANVAS_NONE")
-    '("plot" "GTK_PLOT_CANVAS_PLOT")
-    '("axis" "GTK_PLOT_CANVAS_AXIS")
-    '("legends" "GTK_PLOT_CANVAS_LEGENDS")
-    '("title" "GTK_PLOT_CANVAS_TITLE")
-    '("text" "GTK_PLOT_CANVAS_TEXT")
-    '("data" "GTK_PLOT_CANVAS_DATA")
-    '("line" "GTK_PLOT_CANVAS_LINE")
-    '("rectangle" "GTK_PLOT_CANVAS_RECTANGLE")
-    '("ellipse" "GTK_PLOT_CANVAS_ELLIPSE")
-    '("pixmap" "GTK_PLOT_CANVAS_PIXMAP")
-    '("marker" "GTK_PLOT_CANVAS_MARKER")
-    '("polygon" "GTK_PLOT_CANVAS_POLYGON")
-    '("custom" "GTK_PLOT_CANVAS_CUSTOM")
-  )
-)
-
 (define-enum PlotCanvasPos
   (in-module "Gtk")
   (c-name "GtkPlotCanvasPos")
@@ -588,6 +697,43 @@
     '("bottom-right" "GTK_PLOT_CANVAS_BOTTOM_RIGHT")
   )
 )
+
+(define-flags PlotCanvasArrow
+  (in-module "Gtk")
+  (c-name "GtkPlotCanvasArrow")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_ARROW")
+  (values
+    '("none" "GTK_PLOT_CANVAS_ARROW_NONE")
+    '("origin" "GTK_PLOT_CANVAS_ARROW_ORIGIN")
+    '("end" "GTK_PLOT_CANVAS_ARROW_END")
+  )
+)
+
+(define-enum PlotCanvasPlotPos
+  (in-module "Gtk")
+  (c-name "GtkPlotCanvasPlotPos")
+  (gtype-id "GTK_TYPE_PLOT_CANVAS_PLOT_POS")
+  (values
+    '("out" "GTK_PLOT_CANVAS_PLOT_OUT")
+    '("in-plot" "GTK_PLOT_CANVAS_PLOT_IN_PLOT")
+    '("in-legends" "GTK_PLOT_CANVAS_PLOT_IN_LEGENDS")
+    '("in-title" "GTK_PLOT_CANVAS_PLOT_IN_TITLE")
+    '("in-axis" "GTK_PLOT_CANVAS_PLOT_IN_AXIS")
+    '("in-data" "GTK_PLOT_CANVAS_PLOT_IN_DATA")
+    '("in-gradient" "GTK_PLOT_CANVAS_PLOT_IN_GRADIENT")
+    '("in-marker" "GTK_PLOT_CANVAS_PLOT_IN_MARKER")
+  )
+)
+
+;(define-flags PlotCanvasPlotFlag
+;  (in-module "Gtk")
+;  (c-name "GtkPlotCanvasPlotFlag")
+;  (gtype-id "GTK_TYPE_PLOT_CANVAS_PLOT_FLAG")
+;  (values
+;   '("select_point" "GTK_PLOT_CANVAS_PLOT_SELECT_POINT")
+;   '("dnd_point" "GTK_PLOT_CANVAS_PLOT_DND_POINT")
+; )
+;)
 
 (define-enum PlotProjection
   (in-module "Gtk")
@@ -780,6 +926,17 @@
     '("mm" "GTK_PLOT_MM")
     '("cm" "GTK_PLOT_CM")
     '("inches" "GTK_PLOT_INCHES")
+  )
+)
+
+(define-flags PlotArrow
+  (in-module "Gtk")
+  (c-name "GtkPlotArrow")
+  (gtype-id "GTK_TYPE_PLOT_ARROW")
+  (values
+    '("none" "GTK_PLOT_ARROW_NONE")
+    '("origin" "GTK_PLOT_ARROW_ORIGIN")
+    '("end" "GTK_PLOT_ARROW_END")
   )
 )
 
